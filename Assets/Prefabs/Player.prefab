@@ -97,7 +97,7 @@ MonoBehaviour:
   m_LookAt: {fileID: 0}
   m_Follow: {fileID: 6685007874629717377}
   m_Lens:
-    FieldOfView: 40
+    FieldOfView: 60
     OrthographicSize: 10
     NearClipPlane: 0.1
     FarClipPlane: 5000
@@ -289,8 +289,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2048af7170a15c549a3c883aff0c4086, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_WalkSpeed: 6
-  m_RunSpeed: 11
+  m_WalkSpeed: 5
+  m_RunSpeed: 8
   m_LimitDiagonalSpeed: 1
   m_ToggleRun: 0
   m_JumpSpeed: 8

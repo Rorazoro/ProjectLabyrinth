@@ -6,8 +6,8 @@ public class PlayerController : MonoBehaviour
 {
     private CharacterController cc;
 
-    float inputX = Input.GetAxis("Horizontal");
-    float inputY = Input.GetAxis("Vertical");
+    //float inputX = Input.GetAxis("Horizontal");
+    //float inputY = Input.GetAxis("Vertical");
 
     // Start is called before the first frame update
     void Start()
