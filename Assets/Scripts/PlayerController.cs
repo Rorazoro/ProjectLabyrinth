@@ -4,19 +4,20 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private CharacterController cc;
+
+    public Canvas canvas;
 
     //float inputX = Input.GetAxis("Horizontal");
     //float inputY = Input.GetAxis("Vertical");
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        cc = GetComponent<CharacterController>();
+        canvas = GetComponent<Canvas>();
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (Input.GetKeyDown(KeyCode.E))
         {

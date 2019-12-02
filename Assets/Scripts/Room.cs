@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Room
@@ -20,13 +21,20 @@ public class Room
         neighbors = new Dictionary<string, Room>();
     }
 
-    public List<Vector3Int> NeighborCoordinates()
+    public string PrefabName()
+    {
+        return "Room";
+    }
+
+    public List<Vector3Int> NeighborCoordinates(Vector3Int min, Vector3Int max)
     {
         List<Vector3Int> neighborCoordinates = new List<Vector3Int>();
         neighborCoordinates.Add(new Vector3Int(this.roomCoordinate.x, this.roomCoordinate.y, this.roomCoordinate.z - 1));
         neighborCoordinates.Add(new Vector3Int(this.roomCoordinate.x + 1, this.roomCoordinate.y, this.roomCoordinate.z));
         neighborCoordinates.Add(new Vector3Int(this.roomCoordinate.x, this.roomCoordinate.y, this.roomCoordinate.z + 1));
         neighborCoordinates.Add(new Vector3Int(this.roomCoordinate.x - 1, this.roomCoordinate.y, this.roomCoordinate.z));
+
+        neighborCoordinates.RemoveAll(v => v.x < min.x || v.z < min.z || v.x >= max.x || v.z >= max.z);
 
         return neighborCoordinates;
     }

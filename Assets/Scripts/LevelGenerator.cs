@@ -7,12 +7,68 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField]
     private Vector3Int levelScale = new Vector3Int(5, 1, 5);
     private Room[,,] rooms;
+    private Room currentRoom;
+    private LevelGenerator instance;
 
     // Start is called before the first frame update
     private void Start()
     {
-        GenerateLevel();
-        PrintGrid();
+        this.currentRoom = GenerateLevel();
+        string roomPrefabName = this.currentRoom.PrefabName();
+        GameObject roomObject = (GameObject)Instantiate(Resources.Load(roomPrefabName));
+        //PrintGrid();
+    }
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            DontDestroyOnLoad(this.gameObject);
+            instance = this;
+            currentRoom = GenerateLevel();
+        }
+        else
+        {
+            string roomPrefabName = instance.currentRoom.PrefabName();
+            GameObject roomObject = (GameObject)Instantiate(Resources.Load(roomPrefabName));
+            Destroy(this.gameObject);
+        }
+    }
+
+    private Room GenerateLevel()
+    {
+        rooms = new Room[levelScale.x, levelScale.y, levelScale.z];
+        int numberOfRooms = levelScale.x * levelScale.y * levelScale.z;
+
+        List<Room> createdRooms = new List<Room>();
+        for (int floorIndex = 0; floorIndex < this.rooms.GetLength(1); floorIndex++)
+        {
+            for (int rowIndex = 0; rowIndex < this.rooms.GetLength(0); rowIndex++)
+            {
+                for (int columnIndex = 0; columnIndex < this.rooms.GetLength(2); columnIndex++)
+                {
+                    Room currentRoom = new Room(rowIndex, floorIndex, columnIndex);
+                    this.rooms[rowIndex, floorIndex, columnIndex] = currentRoom;
+                    createdRooms.Add(currentRoom);
+                }
+            }
+        }
+
+        foreach (Room room in createdRooms)
+        {
+            List<Vector3Int> neighborCoordinates = room.NeighborCoordinates(Vector3Int.zero, levelScale);
+            foreach (Vector3Int coordinate in neighborCoordinates)
+            {
+                Room neighbor = this.rooms[coordinate.x, coordinate.y, coordinate.z];
+                if (neighbor != null)
+                {
+                    room.Connect(neighbor);
+                }
+            }
+        }
+
+        Vector3Int startRoomCoordinate = new Vector3Int((int)Random.Range(0, (levelScale.x / 2)), 0, (int)Random.Range(0, (levelScale.z / 2)));
+        return this.rooms[startRoomCoordinate.x, startRoomCoordinate.y, startRoomCoordinate.z];
     }
 
     private void PrintGrid()
@@ -35,75 +91,6 @@ public class LevelGenerator : MonoBehaviour
                 }
                 Debug.Log(row);
             }
-        }
-    }
-
-    private void GenerateLevel()
-    {
-        rooms = new Room[levelScale.x, levelScale.y, levelScale.z];
-        int numberOfRooms = levelScale.x * levelScale.y * levelScale.z;
-
-        Vector3Int initialRoomCoordinate = new Vector3Int((levelScale.x / 2) - 1, 0, (levelScale.z / 2) - 1);
-
-        Queue<Room> roomsToCreate = new Queue<Room>();
-        roomsToCreate.Enqueue(new Room(initialRoomCoordinate.x, initialRoomCoordinate.y, initialRoomCoordinate.z));
-
-        List<Room> createdRooms = new List<Room>();
-        while (roomsToCreate.Count > 0 && createdRooms.Count < numberOfRooms)
-        {
-            Room currentRoom = roomsToCreate.Dequeue();
-            this.rooms[currentRoom.roomCoordinate.x, currentRoom.roomCoordinate.y, currentRoom.roomCoordinate.z] = currentRoom;
-            createdRooms.Add(currentRoom);
-            AddNeighbors(currentRoom, roomsToCreate);
-        }
-
-        foreach (Room room in createdRooms)
-        {
-            List<Vector3Int> neighborCoordinates = room.NeighborCoordinates();
-            foreach (Vector3Int coordinate in neighborCoordinates)
-            {
-                Room neighbor = this.rooms[coordinate.x, coordinate.y, coordinate.z];
-                if (neighbor != null)
-                {
-                    room.Connect(neighbor);
-                }
-            }
-        }
-    }
-
-    private void AddNeighbors(Room currentRoom, Queue<Room> roomsToCreate)
-    {
-        List<Vector3Int> neighborCoordinates = currentRoom.NeighborCoordinates();
-        List<Vector3Int> availableNeighbors = new List<Vector3Int>();
-        foreach (Vector3Int coordinate in neighborCoordinates)
-        {
-            if (this.rooms[coordinate.x, coordinate.y, coordinate.z] == null)
-            {
-                availableNeighbors.Add(coordinate);
-            }
-        }
-
-        int numberOfNeighbors = (int)Random.Range(1, availableNeighbors.Count);
-
-        for (int neighborIndex = 0; neighborIndex < numberOfNeighbors; neighborIndex++)
-        {
-            float randomNumber = Random.value;
-            float roomFrac = 1f / (float)availableNeighbors.Count;
-            Vector3Int chosenNeighbor = new Vector3Int(0, 0, 0);
-            foreach (Vector3Int coordinate in availableNeighbors)
-            {
-                if (randomNumber < roomFrac)
-                {
-                    chosenNeighbor = coordinate;
-                    break;
-                }
-                else
-                {
-                    roomFrac += 1f / (float)availableNeighbors.Count;
-                }
-            }
-            roomsToCreate.Enqueue(new Room(chosenNeighbor));
-            availableNeighbors.Remove(chosenNeighbor);
         }
     }
 }

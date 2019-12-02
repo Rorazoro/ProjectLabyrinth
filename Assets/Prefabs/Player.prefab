@@ -54,6 +54,7 @@ GameObject:
   - component: {fileID: 3654302400634800500}
   - component: {fileID: 7097800191989205456}
   - component: {fileID: 375507919}
+  - component: {fileID: 2135530659731991023}
   m_Layer: 0
   m_Name: Player Cam
   m_TagString: Untagged
@@ -131,6 +132,18 @@ MonoBehaviour:
   minimumY: -60
   maximumY: 60
   frameCounter: 20
+--- !u!114 &2135530659731991023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6360828470588889442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 206302c8a12b9bf4fa3614cfc56741ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6685007874177403831
 GameObject:
   m_ObjectHideFlags: 0
@@ -334,3 +347,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e75bb26ca41d0f540ad6ff247adda211, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvas: {fileID: 0}
