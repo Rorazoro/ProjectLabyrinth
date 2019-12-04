@@ -16,6 +16,7 @@ public class LevelGenerator : MonoBehaviour
         this.currentRoom = GenerateLevel();
         string roomPrefabName = this.currentRoom.PrefabName();
         GameObject roomObject = (GameObject)Instantiate(Resources.Load(roomPrefabName));
+        GameObject playerObject = (GameObject)Instantiate(Resources.Load("Player"), new Vector3(13, 2, -14), Quaternion.identity);
         //PrintGrid();
     }
 
@@ -69,6 +70,16 @@ public class LevelGenerator : MonoBehaviour
 
         Vector3Int startRoomCoordinate = new Vector3Int((int)Random.Range(0, (levelScale.x / 2)), 0, (int)Random.Range(0, (levelScale.z / 2)));
         return this.rooms[startRoomCoordinate.x, startRoomCoordinate.y, startRoomCoordinate.z];
+    }
+
+    public void MoveToRoom(Room room)
+    {
+        this.currentRoom = room;
+    }
+
+    public Room CurrentRoom()
+    {
+        return this.currentRoom;
     }
 
     private void PrintGrid()

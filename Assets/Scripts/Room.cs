@@ -39,6 +39,11 @@ public class Room
         return neighborCoordinates;
     }
 
+    public Room Neighbor(string direction)
+    {
+        return this.neighbors[direction];
+    }
+
     public void Connect(Room neighbor)
     {
         string direction = "";
