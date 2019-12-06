@@ -4,13 +4,18 @@ using UnityEngine;
 
 public class DoorController : MonoBehaviour, IInteractable
 {
+    [SerializeField]
+    public string direction;
     public string InteractabilityInfo => throw new System.NotImplementedException();
 
     private Animator animator;
 
     public void Interact()
     {
+        //LevelGenerator.InstantiateNewRoom(direction);
+
         animator.SetBool("open", true);
+
         StartCoroutine(AutoClose(5));
     }
 

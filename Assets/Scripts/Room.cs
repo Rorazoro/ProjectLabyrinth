@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Room
+public class Room : MonoBehaviour
 {
     [SerializeField]
     public Vector3Int roomCoordinate;
     public Dictionary<string, Room> neighbors;
+    public Dictionary<string, Connector> connectors;
+
+    public bool isLoaded = false;
 
     public Room(int x, int y, int z)
     {

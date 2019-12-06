@@ -7,34 +7,29 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField]
     private Vector3Int levelScale = new Vector3Int(5, 1, 5);
     private Room[,,] rooms;
-    private Room currentRoom;
-    private LevelGenerator instance;
 
     // Start is called before the first frame update
     private void Start()
     {
-        this.currentRoom = GenerateLevel();
-        string roomPrefabName = this.currentRoom.PrefabName();
-        GameObject roomObject = (GameObject)Instantiate(Resources.Load(roomPrefabName));
-        GameObject playerObject = (GameObject)Instantiate(Resources.Load("Player"), new Vector3(13, 2, -14), Quaternion.identity);
+        Room startRoom = GenerateLevel();
         //PrintGrid();
     }
 
-    private void Awake()
-    {
-        if (instance == null)
-        {
-            DontDestroyOnLoad(this.gameObject);
-            instance = this;
-            currentRoom = GenerateLevel();
-        }
-        else
-        {
-            string roomPrefabName = instance.currentRoom.PrefabName();
-            GameObject roomObject = (GameObject)Instantiate(Resources.Load(roomPrefabName));
-            Destroy(this.gameObject);
-        }
-    }
+    //private void Awake()
+    //{
+    //    if (instance == null)
+    //    {
+    //        DontDestroyOnLoad(this.gameObject);
+    //        instance = this;
+    //        currentRoom = GenerateLevel();
+    //    }
+    //    else
+    //    {
+    //        string roomPrefabName = instance.currentRoom.PrefabName();
+    //        GameObject roomObject = (GameObject)Instantiate(Resources.Load(roomPrefabName));
+    //        Destroy(this.gameObject);
+    //    }
+    //}
 
     private Room GenerateLevel()
     {
@@ -72,14 +67,14 @@ public class LevelGenerator : MonoBehaviour
         return this.rooms[startRoomCoordinate.x, startRoomCoordinate.y, startRoomCoordinate.z];
     }
 
-    public void MoveToRoom(Room room)
+    public static void InstantiateNewRoom(Room room)
     {
-        this.currentRoom = room;
-    }
-
-    public Room CurrentRoom()
-    {
-        return this.currentRoom;
+        if (!room.isLoaded)
+        {
+            string roomPrefabName = room.PrefabName();
+            GameObject roomObject = (GameObject)Instantiate(Resources.Load(roomPrefabName));
+            GameObject playerObject = (GameObject)Instantiate(Resources.Load("Player"), new Vector3(13, 2, -14), Quaternion.identity);
+        }
     }
 
     private void PrintGrid()
