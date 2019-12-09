@@ -6,87 +6,66 @@ public class LevelGenerator : MonoBehaviour
 {
     [SerializeField]
     private Vector3Int levelScale = new Vector3Int(5, 1, 5);
-    private Room[,,] rooms;
+    private Module[,,] modules;
+
+    [SerializeField]
+    public Module[] ModulePrefabs;
+    [SerializeField]
+    public Module StartModule;
 
     // Start is called before the first frame update
     private void Start()
     {
-        Room startRoom = GenerateLevel();
-        //PrintGrid();
+        GenerateLevel();
     }
 
-    //private void Awake()
-    //{
-    //    if (instance == null)
-    //    {
-    //        DontDestroyOnLoad(this.gameObject);
-    //        instance = this;
-    //        currentRoom = GenerateLevel();
-    //    }
-    //    else
-    //    {
-    //        string roomPrefabName = instance.currentRoom.PrefabName();
-    //        GameObject roomObject = (GameObject)Instantiate(Resources.Load(roomPrefabName));
-    //        Destroy(this.gameObject);
-    //    }
-    //}
-
-    private Room GenerateLevel()
+    private void GenerateLevel()
     {
-        rooms = new Room[levelScale.x, levelScale.y, levelScale.z];
-        int numberOfRooms = levelScale.x * levelScale.y * levelScale.z;
+        modules = new Module[(levelScale.x * 2) - 1, levelScale.y, (levelScale.z * 2) - 1];
+        StartModule = Instantiate(StartModule, transform.position, transform.rotation);
 
-        List<Room> createdRooms = new List<Room>();
-        for (int floorIndex = 0; floorIndex < this.rooms.GetLength(1); floorIndex++)
+        for (int floorIndex = 0; floorIndex < this.modules.GetLength(1); floorIndex++)
         {
-            for (int rowIndex = 0; rowIndex < this.rooms.GetLength(0); rowIndex++)
+            for (int rowIndex = 0; rowIndex < this.modules.GetLength(0); rowIndex++)
             {
-                for (int columnIndex = 0; columnIndex < this.rooms.GetLength(2); columnIndex++)
+                for (int columnIndex = 0; columnIndex < this.modules.GetLength(2); columnIndex++)
                 {
                     Room currentRoom = new Room(rowIndex, floorIndex, columnIndex);
-                    this.rooms[rowIndex, floorIndex, columnIndex] = currentRoom;
-                    createdRooms.Add(currentRoom);
+
+
+                    this.modules[rowIndex, floorIndex, columnIndex] = currentRoom;
+                    //createdRooms.Add(currentRoom);
                 }
             }
         }
 
-        foreach (Room room in createdRooms)
-        {
-            List<Vector3Int> neighborCoordinates = room.NeighborCoordinates(Vector3Int.zero, levelScale);
-            foreach (Vector3Int coordinate in neighborCoordinates)
-            {
-                Room neighbor = this.rooms[coordinate.x, coordinate.y, coordinate.z];
-                if (neighbor != null)
-                {
-                    room.Connect(neighbor);
-                }
-            }
-        }
+        //foreach (Room room in createdRooms)
+        //{
+        //    List<Vector3Int> neighborCoordinates = room.NeighborCoordinates(Vector3Int.zero, levelScale);
+        //    foreach (Vector3Int coordinate in neighborCoordinates)
+        //    {
+        //        Room neighbor = this.rooms[coordinate.x, coordinate.y, coordinate.z];
+        //        if (neighbor != null)
+        //        {
+        //            room.Connect(neighbor);
+        //        }
+        //    }
+        //}
 
         Vector3Int startRoomCoordinate = new Vector3Int((int)Random.Range(0, (levelScale.x / 2)), 0, (int)Random.Range(0, (levelScale.z / 2)));
-        return this.rooms[startRoomCoordinate.x, startRoomCoordinate.y, startRoomCoordinate.z];
-    }
-
-    public static void InstantiateNewRoom(Room room)
-    {
-        if (!room.isLoaded)
-        {
-            string roomPrefabName = room.PrefabName();
-            GameObject roomObject = (GameObject)Instantiate(Resources.Load(roomPrefabName));
-            GameObject playerObject = (GameObject)Instantiate(Resources.Load("Player"), new Vector3(13, 2, -14), Quaternion.identity);
-        }
+        //return this.rooms[startRoomCoordinate.x, startRoomCoordinate.y, startRoomCoordinate.z];
     }
 
     private void PrintGrid()
     {
-        for (int floorIndex = 0; floorIndex < this.rooms.GetLength(1); floorIndex++)
+        for (int floorIndex = 0; floorIndex < this.modules.GetLength(1); floorIndex++)
         {
-            for (int rowIndex = 0; rowIndex < this.rooms.GetLength(0); rowIndex++)
+            for (int rowIndex = 0; rowIndex < this.modules.GetLength(0); rowIndex++)
             {
                 string row = "";
-                for (int columnIndex = 0; columnIndex < this.rooms.GetLength(2); columnIndex++)
+                for (int columnIndex = 0; columnIndex < this.modules.GetLength(2); columnIndex++)
                 {
-                    if (this.rooms[rowIndex, floorIndex, columnIndex] == null)
+                    if (this.modules[rowIndex, floorIndex, columnIndex] == null)
                     {
                         row += "X";
                     }
