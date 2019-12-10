@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &7822571396282838570
+--- !u!1001 &443420086972759314
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: 5555782808845413341, guid: 19715ee805332f24da2f9381d04bd80c,
         type: 3}
       propertyPath: m_Name
-      value: Room_NW
+      value: Room_WSE
       objectReference: {fileID: 0}
     - target: {fileID: 5555782808845413340, guid: 19715ee805332f24da2f9381d04bd80c,
         type: 3}
@@ -67,22 +67,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8738562191057575473, guid: 19715ee805332f24da2f9381d04bd80c,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8738562191379706145, guid: 19715ee805332f24da2f9381d04bd80c,
         type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6790108679228221511, guid: 19715ee805332f24da2f9381d04bd80c,
+    - target: {fileID: 8738562191521484666, guid: 19715ee805332f24da2f9381d04bd80c,
         type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 940219914356746105, guid: 19715ee805332f24da2f9381d04bd80c,
+    - target: {fileID: 8738562191880898848, guid: 19715ee805332f24da2f9381d04bd80c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8245774647150442381, guid: 19715ee805332f24da2f9381d04bd80c,
         type: 3}
       propertyPath: m_IsActive
       value: 0
