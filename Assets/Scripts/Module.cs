@@ -6,7 +6,11 @@ public class Module : MonoBehaviour
 {
     [SerializeField]
     public Vector3Int Coordinate;
-
     [SerializeField]
-    public Exit[] Exits;
+    public string[] Tags;
+
+    public Exit[] GetExits()
+    {
+        return GetComponentsInChildren<Exit>();
+    }
 }

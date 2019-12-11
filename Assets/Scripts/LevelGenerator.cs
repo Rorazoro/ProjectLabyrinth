@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class LevelGenerator : MonoBehaviour
@@ -21,39 +22,69 @@ public class LevelGenerator : MonoBehaviour
 
     private void GenerateLevel()
     {
-        modules = new Module[(levelScale.x * 2) - 1, levelScale.y, (levelScale.z * 2) - 1];
-        StartModule = Instantiate(StartModule, transform.position, transform.rotation);
+        //modules = new Module[(levelScale.x * 2) - 1, levelScale.y, (levelScale.z * 2) - 1];
+        Module startModule = Instantiate(StartModule, transform.position, transform.rotation);
+        List<Exit> pendingExits = new List<Exit>(startModule.GetExits());
+        int Iterations = 5;
 
-        for (int floorIndex = 0; floorIndex < this.modules.GetLength(1); floorIndex++)
+        for (int iteration = 0; iteration < Iterations; iteration++)
         {
-            for (int rowIndex = 0; rowIndex < this.modules.GetLength(0); rowIndex++)
+            var newExits = new List<Exit>();
+
+            foreach (var pendingExit in pendingExits)
             {
-                for (int columnIndex = 0; columnIndex < this.modules.GetLength(2); columnIndex++)
-                {
-                    Room currentRoom = new Room(rowIndex, floorIndex, columnIndex);
-
-
-                    this.modules[rowIndex, floorIndex, columnIndex] = currentRoom;
-                    //createdRooms.Add(currentRoom);
-                }
+                var newTag = GetRandom(pendingExit.Tags);
+                var newModulePrefab = GetRandomWithTag(ModulePrefabs, newTag);
+                var newModule = (Module)Instantiate(newModulePrefab);
+                var newModuleExits = newModule.GetExits();
+                var exitToMatch = GetRandom(newModuleExits);
+                MatchExits(pendingExit, exitToMatch);
+                newExits.AddRange(newModuleExits.Where(e => e != exitToMatch));
             }
+
+            pendingExits = newExits;
         }
+    }
 
-        //foreach (Room room in createdRooms)
-        //{
-        //    List<Vector3Int> neighborCoordinates = room.NeighborCoordinates(Vector3Int.zero, levelScale);
-        //    foreach (Vector3Int coordinate in neighborCoordinates)
-        //    {
-        //        Room neighbor = this.rooms[coordinate.x, coordinate.y, coordinate.z];
-        //        if (neighbor != null)
-        //        {
-        //            room.Connect(neighbor);
-        //        }
-        //    }
-        //}
+    private void MatchExits(Exit oldExit, Exit newExit)
+    {
+        var newModule = newExit.transform.parent;
+        var forwardVectorToMatch = -oldExit.transform.forward;
+        var correctiveRotation = Azimuth(forwardVectorToMatch) - Azimuth(newExit.transform.forward);
+        newModule.RotateAround(newExit.transform.position, Vector3.up, correctiveRotation);
+        var correctiveTranslation = oldExit.transform.position - newExit.transform.position;
+        newModule.transform.position += correctiveTranslation;
+    }
 
-        Vector3Int startRoomCoordinate = new Vector3Int((int)Random.Range(0, (levelScale.x / 2)), 0, (int)Random.Range(0, (levelScale.z / 2)));
-        //return this.rooms[startRoomCoordinate.x, startRoomCoordinate.y, startRoomCoordinate.z];
+    private static float Azimuth(Vector3 vector)
+    {
+        return Vector3.Angle(Vector3.forward, vector) * Mathf.Sign(vector.x);
+    }
+
+    private static TItem GetRandom<TItem>(TItem[] array)
+    {
+        try
+        {
+            return array[Random.Range(0, array.Length)];
+        }
+        catch (UnityException)
+        {
+            throw;
+        }
+    }
+
+
+    private static Module GetRandomWithTag(IEnumerable<Module> modules, string tagToMatch)
+    {
+        var matchingModules = modules.Where(m => m.Tags.Contains(tagToMatch)).ToArray();
+        if (matchingModules.Any())
+        {
+            return GetRandom(matchingModules);
+        }
+        else
+        {
+            return null;
+        }
     }
 
     private void PrintGrid()

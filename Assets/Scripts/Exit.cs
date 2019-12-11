@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Exit : MonoBehaviour
 {
+	[SerializeField]
+	public string[] Tags;
+
 	void OnDrawGizmos()
 	{
 		var scale = 1.0f;
