@@ -12,8 +12,6 @@ public class DoorController : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        //LevelGenerator.InstantiateNewRoom(direction);
-
         animator.SetBool("open", true);
 
         StartCoroutine(AutoClose(5));
@@ -21,7 +19,7 @@ public class DoorController : MonoBehaviour, IInteractable
 
     public void ShowInteractability()
     {
-        Debug.Log("Ready to activate door");
+        //Debug.Log("Ready to activate door");
     }
 
     private IEnumerator AutoClose(int secs)

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -18,6 +19,7 @@ public class LevelGenerator : MonoBehaviour
     private void Start()
     {
         GenerateLevel();
+        GameObject playerObject = (GameObject)Instantiate(Resources.Load("Player"), new Vector3(13, 2, -14), Quaternion.identity);
     }
 
     private void GenerateLevel()
@@ -25,7 +27,7 @@ public class LevelGenerator : MonoBehaviour
         //modules = new Module[(levelScale.x * 2) - 1, levelScale.y, (levelScale.z * 2) - 1];
         Module startModule = Instantiate(StartModule, transform.position, transform.rotation);
         List<Exit> pendingExits = new List<Exit>(startModule.GetExits());
-        int Iterations = 5;
+        int Iterations = 8;
 
         for (int iteration = 0; iteration < Iterations; iteration++)
         {
@@ -36,10 +38,18 @@ public class LevelGenerator : MonoBehaviour
                 var newTag = GetRandom(pendingExit.Tags);
                 var newModulePrefab = GetRandomWithTag(ModulePrefabs, newTag);
                 var newModule = (Module)Instantiate(newModulePrefab);
-                var newModuleExits = newModule.GetExits();
-                var exitToMatch = GetRandom(newModuleExits);
-                MatchExits(pendingExit, exitToMatch);
-                newExits.AddRange(newModuleExits.Where(e => e != exitToMatch));
+
+                if (!CheckForOverlap(newModule))
+                {
+                    var newModuleExits = newModule.GetExits();
+                    var exitToMatch = GetRandom(newModuleExits);
+                    MatchExits(pendingExit, exitToMatch);
+                    newExits.AddRange(newModuleExits.Where(e => e != exitToMatch));
+                }
+                else
+                {
+                    Destroy(newModule);
+                }
             }
 
             pendingExits = newExits;
@@ -65,9 +75,9 @@ public class LevelGenerator : MonoBehaviour
     {
         try
         {
-            return array[Random.Range(0, array.Length)];
+            return array[UnityEngine.Random.Range(0, array.Length)];
         }
-        catch (UnityException)
+        catch (Exception)
         {
             throw;
         }
@@ -85,6 +95,12 @@ public class LevelGenerator : MonoBehaviour
         {
             return null;
         }
+    }
+
+    private bool CheckForOverlap(Module newModule)
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(newModule.transform.position, 1);
+        return false;
     }
 
     private void PrintGrid()
