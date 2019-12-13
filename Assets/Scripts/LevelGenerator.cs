@@ -8,7 +8,7 @@ public class LevelGenerator : MonoBehaviour
 {
     [SerializeField]
     private Vector3Int levelScale = new Vector3Int(5, 1, 5);
-    private Module[,,] modules;
+    private List<Module> modules;
 
     [SerializeField]
     public Module[] ModulePrefabs;
@@ -24,10 +24,10 @@ public class LevelGenerator : MonoBehaviour
 
     private void GenerateLevel()
     {
-        //modules = new Module[(levelScale.x * 2) - 1, levelScale.y, (levelScale.z * 2) - 1];
+        modules = new List<Module>();
         Module startModule = Instantiate(StartModule, transform.position, transform.rotation);
         List<Exit> pendingExits = new List<Exit>(startModule.GetExits());
-        int Iterations = 8;
+        int Iterations = 5;
 
         for (int iteration = 0; iteration < Iterations; iteration++)
         {
@@ -39,16 +39,21 @@ public class LevelGenerator : MonoBehaviour
                 var newModulePrefab = GetRandomWithTag(ModulePrefabs, newTag);
                 var newModule = (Module)Instantiate(newModulePrefab);
 
-                if (!CheckForOverlap(newModule))
+                var newModuleExits = newModule.GetExits();
+                var exitToMatch = GetRandom(newModuleExits);
+                MatchExits(pendingExit, exitToMatch);
+
+                string output = $"Module position: {newModule.transform.position}";
+                if (CheckIntersect(newModule))
                 {
-                    var newModuleExits = newModule.GetExits();
-                    var exitToMatch = GetRandom(newModuleExits);
-                    MatchExits(pendingExit, exitToMatch);
-                    newExits.AddRange(newModuleExits.Where(e => e != exitToMatch));
+                    output += " <color=red>OVERLAP!!</color>";
+                    Debug.Log(output);
+                    Destroy(newModule.gameObject);
                 }
                 else
                 {
-                    Destroy(newModule);
+                    newExits.AddRange(newModuleExits.Where(e => e != exitToMatch));
+                    modules.Add(newModule);
                 }
             }
 
@@ -97,32 +102,41 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
-    private bool CheckForOverlap(Module newModule)
+    private bool CheckIntersect(Module newModule)
     {
-        Collider[] hitColliders = Physics.OverlapSphere(newModule.transform.position, 1);
+        Collider collider1 = newModule.gameObject.GetComponent<Collider>();
+        GameObject[] objs = GameObject.FindGameObjectsWithTag("Corridor");
+        foreach (GameObject obj in objs)
+        {
+            Collider collider2 = obj.GetComponent<Collider>();
+            if (collider1.bounds.Intersects(collider2.bounds))
+            {
+                if (newModule.gameObject != obj)
+                {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
-    private void PrintGrid()
+    private bool CheckForOverlap(Module newModule)
     {
-        for (int floorIndex = 0; floorIndex < this.modules.GetLength(1); floorIndex++)
+        Rigidbody rb = newModule.GetComponent<Rigidbody>();
+        if (rb != null)
         {
-            for (int rowIndex = 0; rowIndex < this.modules.GetLength(0); rowIndex++)
+            Collider[] hitColliders = Physics.OverlapSphere(rb.centerOfMass, 1f, 9);
+            if (hitColliders.Count() > 2)
             {
-                string row = "";
-                for (int columnIndex = 0; columnIndex < this.modules.GetLength(2); columnIndex++)
-                {
-                    if (this.modules[rowIndex, floorIndex, columnIndex] == null)
-                    {
-                        row += "X";
-                    }
-                    else
-                    {
-                        row += "R";
-                    }
-                }
-                Debug.Log(row);
+                return true;
             }
         }
+        return false;
+        //if (modules.Any(x => x.transform.position == newModule.transform.position))
+        //{
+        //    return true;
+        //}
+
+        //return false;
     }
 }

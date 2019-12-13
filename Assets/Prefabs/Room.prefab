@@ -229,7 +229,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5555782808845413340}
   - component: {fileID: 7969739286205401614}
-  m_Layer: 0
+  - component: {fileID: 2861885448361373434}
+  m_Layer: 9
   m_Name: Room
   m_TagString: Room
   m_Icon: {fileID: 0}
@@ -272,8 +273,22 @@ MonoBehaviour:
   Coordinate: {x: 0, y: 0, z: 0}
   Tags:
   - Room
+  overlap: 0
   startRoom: 0
   endRoom: 0
+--- !u!65 &2861885448361373434
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5555782808845413341}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 30, y: 17, z: 30}
+  m_Center: {x: 15, y: 8.5, z: -15}
 --- !u!1 &6681612432657762356
 GameObject:
   m_ObjectHideFlags: 0
@@ -725,11 +740,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Connector_Closed
-      objectReference: {fileID: 0}
-    - target: {fileID: 3477045272792803066, guid: 4d1b632fd6ae1b74ea67714ff2d61a0b,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2142972850888431244, guid: 4d1b632fd6ae1b74ea67714ff2d61a0b,
         type: 3}
