@@ -230,6 +230,7 @@ GameObject:
   - component: {fileID: 5555782808845413340}
   - component: {fileID: 7969739286205401614}
   - component: {fileID: 2861885448361373434}
+  - component: {fileID: 1167562035103531935}
   m_Layer: 9
   m_Name: Room
   m_TagString: Room
@@ -289,6 +290,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 30, y: 17, z: 30}
   m_Center: {x: 15, y: 8.5, z: -15}
+--- !u!114 &1167562035103531935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5555782808845413341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 719dfaeadc1ca2e43a4463439b74afdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: 0, g: 1, b: 0, a: 1}
 --- !u!1 &6681612432657762356
 GameObject:
   m_ObjectHideFlags: 0

@@ -48,13 +48,12 @@ public class LevelGenerator : MonoBehaviour
                 {
                     output += " <color=red>OVERLAP!!</color>";
                     Debug.Log(output);
-                    Destroy(newModule.gameObject);
+                    newModule.GetComponent<ShowBounds>().color = Color.red;
+                    //Destroy(newModule.gameObject);
                 }
-                else
-                {
-                    newExits.AddRange(newModuleExits.Where(e => e != exitToMatch));
-                    modules.Add(newModule);
-                }
+
+                newExits.AddRange(newModuleExits.Where(e => e != exitToMatch));
+                modules.Add(newModule);
             }
 
             pendingExits = newExits;
@@ -111,7 +110,7 @@ public class LevelGenerator : MonoBehaviour
             Collider collider2 = obj.GetComponent<Collider>();
             if (collider1.bounds.Intersects(collider2.bounds))
             {
-                if (newModule.gameObject != obj)
+                if (GameObject.ReferenceEquals(newModule.gameObject, obj))
                 {
                     return true;
                 }
