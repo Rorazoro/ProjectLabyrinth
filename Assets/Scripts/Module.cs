@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ public class Module : MonoBehaviour
     [SerializeField]
     public string[] Tags;
     [SerializeField]
-    public bool overlap;
+    public Guid Id = Guid.NewGuid();
 
     public Exit[] GetExits()
     {
@@ -18,6 +19,10 @@ public class Module : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        overlap = true;
+        
+    }
+
+    private void OnCollisionEnter(Collision col)
+    {
     }
 }

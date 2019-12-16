@@ -105,15 +105,15 @@ public class LevelGenerator : MonoBehaviour
     {
         Collider collider1 = newModule.gameObject.GetComponent<Collider>();
         GameObject[] objs = GameObject.FindGameObjectsWithTag("Corridor");
-        foreach (GameObject obj in objs)
+        foreach (GameObject obj in objs.Where(x => x != newModule))
         {
             Collider collider2 = obj.GetComponent<Collider>();
-            if (collider1.bounds.Intersects(collider2.bounds))
+            if (collider2.bounds.Intersects(collider1.bounds))
             {
-                if (GameObject.ReferenceEquals(newModule.gameObject, obj))
-                {
+                //if (newModule.gameObject.GetInstanceID() !=  obj.GetInstanceID())
+                //{
                     return true;
-                }
+                //}
             }
         }
         return false;
