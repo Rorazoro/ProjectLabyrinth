@@ -26,6 +26,7 @@ public class LevelGenerator : MonoBehaviour
     {
         modules = new List<Module>();
         Module startModule = Instantiate(StartModule, transform.position, transform.rotation);
+        startModule.transform.parent = this.gameObject.transform;
         List<Exit> pendingExits = new List<Exit>(startModule.GetExits());
         int Iterations = 5;
 
@@ -38,6 +39,7 @@ public class LevelGenerator : MonoBehaviour
                 var newTag = GetRandom(pendingExit.Tags);
                 var newModulePrefab = GetRandomWithTag(ModulePrefabs, newTag);
                 var newModule = (Module)Instantiate(newModulePrefab);
+                newModule.transform.parent = this.gameObject.transform;
 
                 var newModuleExits = newModule.GetExits();
                 var exitToMatch = GetRandom(newModuleExits);
@@ -49,6 +51,7 @@ public class LevelGenerator : MonoBehaviour
                     output += " <color=red>OVERLAP!!</color>";
                     Debug.Log(output);
                     newModule.GetComponent<ShowBounds>().color = Color.red;
+                    newModule.gameObject.SetActive(false);
                     //Destroy(newModule.gameObject);
                 }
 
