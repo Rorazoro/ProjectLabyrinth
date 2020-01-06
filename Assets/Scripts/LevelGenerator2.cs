@@ -53,15 +53,7 @@ public class LevelGenerator2 : MonoBehaviour
             var exitToMatch = GetRandom(newModuleExits);
             MatchExits(pendingExit, exitToMatch);
 
-            string output = $"Module position: {newModule.transform.position}";
-            if (CheckIntersect(newModule))
-            {
-                output += " <color=red>OVERLAP!!</color>";
-                Debug.Log(output);
-                newModule.GetComponent<ShowBounds>().color = Color.red;
-                //newModule.gameObject.SetActive(false);
-                //Destroy(newModule.gameObject);
-            }
+            CheckIntersect(newModule);
 
             newExits.AddRange(newModuleExits.Where(e => e != exitToMatch));
             modules.Add(newModule);
@@ -79,13 +71,16 @@ public class LevelGenerator2 : MonoBehaviour
         newModule.transform.position += correctiveTranslation;
     }
 
-    private bool CheckIntersect(Module newModule)
+    private void CheckIntersect(Module newModule)
     {
-        //Renderer renderer1 = newModule.gameObject.GetComponent<Renderer>();
-        Collider[] hits = Physics.OverlapBox(newModule.transform.position, (newModule.transform.position / 2));
+        Collider collider1 = newModule.gameObject.GetComponent<Collider>();
+        Collider[] hits = Physics.OverlapBox(gameObject.transform.position, transform.localScale / 2, Quaternion.identity, 9);
+        DrawOverlapBox(gameObject.transform.position, transform.localScale / 2);
         if (hits.Count() > 0)
         {
-            return true;
+            string output = $"New Module: {collider1.bounds} <color=red>OVERLAP!!</color>";
+            Debug.Log(output);
+            newModule.GetComponent<ShowBounds>().color = Color.red;
         }
         //GameObject[] objs = GameObject.FindGameObjectsWithTag("Corridor");
         //foreach (GameObject obj in objs.Where(x => x != newModule))
@@ -101,7 +96,35 @@ public class LevelGenerator2 : MonoBehaviour
         //        }
         //    }
         //}
-        return false;
+    }
+
+    private void DrawOverlapBox(Vector3 center, Vector3 extends)
+    {
+        Color color = Color.magenta;
+
+        Vector3 v3FrontTopLeft = new Vector3(center.x - extends.x, center.y + extends.y, center.z - extends.z);  // Front top left corner
+        Vector3 v3FrontTopRight = new Vector3(center.x + extends.x, center.y + extends.y, center.z - extends.z);  // Front top right corner
+        Vector3 v3FrontBottomLeft = new Vector3(center.x - extends.x, center.y - extends.y, center.z - extends.z);  // Front bottom left corner
+        Vector3 v3FrontBottomRight = new Vector3(center.x + extends.x, center.y - extends.y, center.z - extends.z);  // Front bottom right corner
+        Vector3 v3BackTopLeft = new Vector3(center.x - extends.x, center.y + extends.y, center.z + extends.z);  // Back top left corner
+        Vector3 v3BackTopRight = new Vector3(center.x + extends.x, center.y + extends.y, center.z + extends.z);  // Back top right corner
+        Vector3 v3BackBottomLeft = new Vector3(center.x - extends.x, center.y - extends.y, center.z + extends.z);  // Back bottom left corner
+        Vector3 v3BackBottomRight = new Vector3(center.x + extends.x, center.y - extends.y, center.z + extends.z);  // Back bottom right corner
+
+        Debug.DrawLine(v3FrontTopLeft, v3FrontTopRight, color);
+        Debug.DrawLine(v3FrontTopRight, v3FrontBottomRight, color);
+        Debug.DrawLine(v3FrontBottomRight, v3FrontBottomLeft, color);
+        Debug.DrawLine(v3FrontBottomLeft, v3FrontTopLeft, color);
+
+        Debug.DrawLine(v3BackTopLeft, v3BackTopRight, color);
+        Debug.DrawLine(v3BackTopRight, v3BackBottomRight, color);
+        Debug.DrawLine(v3BackBottomRight, v3BackBottomLeft, color);
+        Debug.DrawLine(v3BackBottomLeft, v3BackTopLeft, color);
+
+        Debug.DrawLine(v3FrontTopLeft, v3BackTopLeft, color);
+        Debug.DrawLine(v3FrontTopRight, v3BackTopRight, color);
+        Debug.DrawLine(v3FrontBottomRight, v3BackBottomRight, color);
+        Debug.DrawLine(v3FrontBottomLeft, v3BackBottomLeft, color);
     }
 
     private static float Azimuth(Vector3 vector)

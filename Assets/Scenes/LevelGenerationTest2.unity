@@ -602,6 +602,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1654f60a3e74e9a4b86b5476c6ea4498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  activateGenerator: 0
   ModulePrefabs:
   - {fileID: 7887590068911438728, guid: 557f225baa697d4468779b4f946b1201, type: 3}
   - {fileID: 3004373725649224975, guid: a41e64d45163b774b81d24886ce762d7, type: 3}
