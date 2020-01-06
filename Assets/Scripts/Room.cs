@@ -8,22 +8,7 @@ public class Room : Module
     public bool startRoom = false;
     public bool endRoom = false;
 
-    public Room(int x, int y, int z)
-    {
-        Coordinate = new Vector3Int(x, y, z);
-    }
-
-    public Room(Vector3Int coord)
-    {
-        Coordinate = coord;
-    }
-
-    public string PrefabName()
-    {
-        return "Room";
-    }
-
-    public List<Vector3Int> GetExits(Vector3Int min, Vector3Int max)
+    public List<Vector3Int> GetNeighborCoordinates(Vector3Int min, Vector3Int max)
     {
         List<Vector3Int> neighborCoordinates = new List<Vector3Int>();
         neighborCoordinates.Add(new Vector3Int(this.Coordinate.x, this.Coordinate.y, this.Coordinate.z - 1));

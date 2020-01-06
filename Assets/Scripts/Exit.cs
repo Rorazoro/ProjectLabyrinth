@@ -5,6 +5,8 @@ using UnityEngine;
 public class Exit : MonoBehaviour
 {
 	[SerializeField]
+	public Direction direction;
+	[SerializeField]
 	public string[] Tags;
 
 	void OnDrawGizmos()

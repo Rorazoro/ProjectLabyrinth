@@ -7,58 +7,71 @@ using UnityEngine;
 public class LevelGenerator2 : MonoBehaviour
 {
     [SerializeField]
-    public bool activateGenerator;
-    [SerializeField]
     public Module[] ModulePrefabs;
-    [SerializeField]
-    public Module StartModule;
 
     [SerializeField]
     private Vector3Int levelScale = new Vector3Int(5, 1, 5);
-    private List<Module> modules;
-    private List<Exit> pendingExits;
-    private int currentIteration = 0;
+    private Room[,,] roomMap;
+    private List<Tuple<Vector3Int, Vector3Int>> corridors;
 
     private void Start()
     {
-        modules = new List<Module>();
-        var newModulePrefab = GetRandomWithTag(ModulePrefabs, "Room");
-        Module startModule = Instantiate(newModulePrefab, transform.position, transform.rotation);
-        startModule.transform.parent = this.gameObject.transform;
-        pendingExits = new List<Exit>(startModule.GetExits());
-        //GameObject playerObject = (GameObject)Instantiate(Resources.Load("Player"), new Vector3(13, 2, -14), Quaternion.identity);
+        GenerateLevel();
     }
 
-    private void Update()
+    private void GenerateLevel()
     {
-        if (activateGenerator)
+        int floors = levelScale.y;
+        int rows = levelScale.x;
+        int columns = levelScale.z;
+
+        roomMap = new Room[rows, floors, columns];
+        for (int f = 0; f < roomMap.GetLength(1); f++)
         {
-            IterateLevelGeneration();
-            currentIteration++;
-            activateGenerator = false;
+            for (int c = 0; c < roomMap.GetLength(2); c++)
+            {
+                for (int r = 0; r < roomMap.GetLength(0); r++)
+                {
+                    Vector3Int newRoomCoord = new Vector3Int(r, f, c);
+                    Room newRoomPrefab = GetRandomWithTag(ModulePrefabs, "Room") as Room;
+                    newRoomPrefab.Coordinate = newRoomCoord;
+                    Room newRoom = Instantiate(newRoomPrefab);
+                    newRoom.transform.parent = this.gameObject.transform;
+                    roomMap[r, f, c] = newRoom;
+
+                    foreach (Vector3Int neighborCoord in newRoom.GetNeighborCoordinates(Vector3Int.zero, levelScale - Vector3Int.one))
+                    {
+                        if (!corridors.Any(x => (x.Item1 == newRoomCoord && x.Item2 == neighborCoord) || (x.Item1 == neighborCoord && x.Item2 == newRoomCoord)))
+                        {
+                            corridors.Add(new Tuple<Vector3Int, Vector3Int>(newRoomCoord, neighborCoord));
+
+                            Exit newRoomExit;
+                            if (neighborCoord.x < newRoomCoord.x) //North
+                            {
+                                newRoomExit = newRoom.GetExit(Direction.N);
+                            }
+                            else if (neighborCoord.x > newRoomCoord.x) //South
+                            {
+                                newRoomExit = newRoom.GetExit(Direction.S);
+                            }
+                            else if (neighborCoord.z < newRoomCoord.z) //East
+                            {
+                                newRoomExit = newRoom.GetExit(Direction.E);
+                            }
+                            else if (neighborCoord.z > newRoomCoord.z) //West
+                            {
+                                newRoomExit = newRoom.GetExit(Direction.W);
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                    }
+                }
+            }
         }
-    }
 
-    private void IterateLevelGeneration()
-    {
-        var newExits = new List<Exit>();
-        foreach (var pendingExit in pendingExits)
-        {
-            var newTag = GetRandom(pendingExit.Tags);
-            var newModulePrefab = GetRandomWithTag(ModulePrefabs, newTag);
-            var newModule = (Module)Instantiate(newModulePrefab);
-            newModule.transform.parent = this.gameObject.transform;
-
-            var newModuleExits = newModule.GetExits();
-            var exitToMatch = GetRandom(newModuleExits);
-            MatchExits(pendingExit, exitToMatch);
-
-            CheckIntersect(newModule);
-
-            newExits.AddRange(newModuleExits.Where(e => e != exitToMatch));
-            modules.Add(newModule);
-        }
-        pendingExits = newExits;
     }
 
     private void MatchExits(Exit oldExit, Exit newExit)
@@ -69,62 +82,6 @@ public class LevelGenerator2 : MonoBehaviour
         newModule.RotateAround(newExit.transform.position, Vector3.up, correctiveRotation);
         var correctiveTranslation = oldExit.transform.position - newExit.transform.position;
         newModule.transform.position += correctiveTranslation;
-    }
-
-    private void CheckIntersect(Module newModule)
-    {
-        Collider collider1 = newModule.gameObject.GetComponent<Collider>();
-        Collider[] hits = Physics.OverlapBox(gameObject.transform.position, transform.localScale / 2, Quaternion.identity, 9);
-        DrawOverlapBox(gameObject.transform.position, transform.localScale / 2);
-        if (hits.Count() > 0)
-        {
-            string output = $"New Module: {collider1.bounds} <color=red>OVERLAP!!</color>";
-            Debug.Log(output);
-            newModule.GetComponent<ShowBounds>().color = Color.red;
-        }
-        //GameObject[] objs = GameObject.FindGameObjectsWithTag("Corridor");
-        //foreach (GameObject obj in objs.Where(x => x != newModule))
-        //{
-        //    Collider collider2 = obj.GetComponent<Collider>();
-        //    if (collider2.bounds.Intersects(collider1.bounds))
-        //    {
-        //        int id1 = newModule.gameObject.GetInstanceID();
-        //        int id2 = obj.GetInstanceID();
-        //        if (id1 != id2)
-        //        {
-        //            return true;
-        //        }
-        //    }
-        //}
-    }
-
-    private void DrawOverlapBox(Vector3 center, Vector3 extends)
-    {
-        Color color = Color.magenta;
-
-        Vector3 v3FrontTopLeft = new Vector3(center.x - extends.x, center.y + extends.y, center.z - extends.z);  // Front top left corner
-        Vector3 v3FrontTopRight = new Vector3(center.x + extends.x, center.y + extends.y, center.z - extends.z);  // Front top right corner
-        Vector3 v3FrontBottomLeft = new Vector3(center.x - extends.x, center.y - extends.y, center.z - extends.z);  // Front bottom left corner
-        Vector3 v3FrontBottomRight = new Vector3(center.x + extends.x, center.y - extends.y, center.z - extends.z);  // Front bottom right corner
-        Vector3 v3BackTopLeft = new Vector3(center.x - extends.x, center.y + extends.y, center.z + extends.z);  // Back top left corner
-        Vector3 v3BackTopRight = new Vector3(center.x + extends.x, center.y + extends.y, center.z + extends.z);  // Back top right corner
-        Vector3 v3BackBottomLeft = new Vector3(center.x - extends.x, center.y - extends.y, center.z + extends.z);  // Back bottom left corner
-        Vector3 v3BackBottomRight = new Vector3(center.x + extends.x, center.y - extends.y, center.z + extends.z);  // Back bottom right corner
-
-        Debug.DrawLine(v3FrontTopLeft, v3FrontTopRight, color);
-        Debug.DrawLine(v3FrontTopRight, v3FrontBottomRight, color);
-        Debug.DrawLine(v3FrontBottomRight, v3FrontBottomLeft, color);
-        Debug.DrawLine(v3FrontBottomLeft, v3FrontTopLeft, color);
-
-        Debug.DrawLine(v3BackTopLeft, v3BackTopRight, color);
-        Debug.DrawLine(v3BackTopRight, v3BackBottomRight, color);
-        Debug.DrawLine(v3BackBottomRight, v3BackBottomLeft, color);
-        Debug.DrawLine(v3BackBottomLeft, v3BackTopLeft, color);
-
-        Debug.DrawLine(v3FrontTopLeft, v3BackTopLeft, color);
-        Debug.DrawLine(v3FrontTopRight, v3BackTopRight, color);
-        Debug.DrawLine(v3FrontBottomRight, v3BackBottomRight, color);
-        Debug.DrawLine(v3FrontBottomLeft, v3BackBottomLeft, color);
     }
 
     private static float Azimuth(Vector3 vector)

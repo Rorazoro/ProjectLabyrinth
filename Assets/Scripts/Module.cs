@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Module : MonoBehaviour
@@ -17,12 +18,8 @@ public class Module : MonoBehaviour
         return GetComponentsInChildren<Exit>();
     }
 
-    private void OnTriggerEnter(Collider other)
+    public Exit GetExit(Direction direction)
     {
-        
-    }
-
-    private void OnCollisionEnter(Collision col)
-    {
+        return GetComponentsInChildren<Exit>().First(x => x.direction == direction);
     }
 }
