@@ -16,7 +16,7 @@ public class LevelGenerator : MonoBehaviour
     public Module StartModule;
 
     // Start is called before the first frame update
-    private void Start()
+    private void Awake()
     {
         GenerateLevel();
         GameObject playerObject = (GameObject)Instantiate(Resources.Load("Player"), new Vector3(13, 2, -14), Quaternion.identity);
@@ -51,7 +51,7 @@ public class LevelGenerator : MonoBehaviour
                     output += " <color=red>OVERLAP!!</color>";
                     Debug.Log(output);
                     newModule.GetComponent<ShowBounds>().color = Color.red;
-                    newModule.gameObject.SetActive(false);
+                    //newModule.gameObject.SetActive(false);
                     //Destroy(newModule.gameObject);
                 }
 
@@ -113,10 +113,10 @@ public class LevelGenerator : MonoBehaviour
             Collider collider2 = obj.GetComponent<Collider>();
             if (collider2.bounds.Intersects(collider1.bounds))
             {
-                //if (newModule.gameObject.GetInstanceID() !=  obj.GetInstanceID())
-                //{
+                if (newModule.gameObject.GetInstanceID() != obj.GetInstanceID())
+                {
                     return true;
-                //}
+                }
             }
         }
         return false;
