@@ -4,5 +4,7 @@ public enum Direction
     N,
     S,
     E,
-    W
+    W,
+    A,
+    B
 }

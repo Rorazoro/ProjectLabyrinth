@@ -12,10 +12,20 @@ PrefabInstance:
       propertyPath: direction
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 678255999188754935, guid: 19715ee805332f24da2f9381d04bd80c,
+        type: 3}
+      propertyPath: Tags.Array.data[0]
+      value: Connector
+      objectReference: {fileID: 0}
     - target: {fileID: 934559476947199108, guid: 19715ee805332f24da2f9381d04bd80c,
         type: 3}
       propertyPath: direction
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 934559476947199108, guid: 19715ee805332f24da2f9381d04bd80c,
+        type: 3}
+      propertyPath: Tags.Array.data[0]
+      value: Connector
       objectReference: {fileID: 0}
     - target: {fileID: 1107715175358249626, guid: 19715ee805332f24da2f9381d04bd80c,
         type: 3}
@@ -36,6 +46,11 @@ PrefabInstance:
         type: 3}
       propertyPath: direction
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3862547532941331894, guid: 19715ee805332f24da2f9381d04bd80c,
+        type: 3}
+      propertyPath: Tags.Array.data[0]
+      value: Connector
       objectReference: {fileID: 0}
     - target: {fileID: 5555782808845413340, guid: 19715ee805332f24da2f9381d04bd80c,
         type: 3}
@@ -101,6 +116,11 @@ PrefabInstance:
         type: 3}
       propertyPath: direction
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6318713467689478615, guid: 19715ee805332f24da2f9381d04bd80c,
+        type: 3}
+      propertyPath: Tags.Array.data[0]
+      value: Connector
       objectReference: {fileID: 0}
     - target: {fileID: 7616813461306398317, guid: 19715ee805332f24da2f9381d04bd80c,
         type: 3}

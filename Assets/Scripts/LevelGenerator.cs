@@ -16,10 +16,10 @@ public class LevelGenerator : MonoBehaviour
     public Module StartModule;
 
     // Start is called before the first frame update
-    private void Awake()
+    private void Start()
     {
         GenerateLevel();
-        GameObject playerObject = (GameObject)Instantiate(Resources.Load("Player"), new Vector3(13, 2, -14), Quaternion.identity);
+        //GameObject playerObject = (GameObject)Instantiate(Resources.Load("Player"), new Vector3(13, 2, -14), Quaternion.identity);
     }
 
     private void GenerateLevel()
@@ -28,7 +28,7 @@ public class LevelGenerator : MonoBehaviour
         Module startModule = Instantiate(StartModule, transform.position, transform.rotation);
         startModule.transform.parent = this.gameObject.transform;
         List<Exit> pendingExits = new List<Exit>(startModule.GetExits());
-        int Iterations = 5;
+        int Iterations = (levelScale.x * levelScale.z) - 1;
 
         for (int iteration = 0; iteration < Iterations; iteration++)
         {
@@ -36,27 +36,30 @@ public class LevelGenerator : MonoBehaviour
 
             foreach (var pendingExit in pendingExits)
             {
-                var newTag = GetRandom(pendingExit.Tags);
-                var newModulePrefab = GetRandomWithTag(ModulePrefabs, newTag);
-                var newModule = (Module)Instantiate(newModulePrefab);
-                newModule.transform.parent = this.gameObject.transform;
-
-                var newModuleExits = newModule.GetExits();
-                var exitToMatch = GetRandom(newModuleExits);
-                MatchExits(pendingExit, exitToMatch);
-
-                string output = $"Module position: {newModule.transform.position}";
-                if (CheckIntersect(newModule))
+                if (pendingExit.direction != Direction.N && pendingExit.direction != Direction.W)
                 {
-                    output += " <color=red>OVERLAP!!</color>";
-                    Debug.Log(output);
-                    newModule.GetComponent<ShowBounds>().color = Color.red;
-                    //newModule.gameObject.SetActive(false);
-                    //Destroy(newModule.gameObject);
-                }
+                    var newTag = GetRandom(pendingExit.Tags);
+                    var newModulePrefab = GetRandomWithTag(ModulePrefabs, newTag);
+                    var newModule = (Module)Instantiate(newModulePrefab);
+                    newModule.transform.parent = this.gameObject.transform;
 
-                newExits.AddRange(newModuleExits.Where(e => e != exitToMatch));
-                modules.Add(newModule);
+                    var newModuleExits = newModule.GetExits();
+                    var exitToMatch = GetOppositeExit(newModuleExits, pendingExit);
+                    MatchExits(pendingExit, exitToMatch);
+
+                    //string output = $"Module position: {newModule.transform.position}";
+                    //if (CheckIntersect(newModule))
+                    //{
+                    //    output += " <color=red>OVERLAP!!</color>";
+                    //    Debug.Log(output);
+                    //    newModule.GetComponent<ShowBounds>().color = Color.red;
+                    //    //newModule.gameObject.SetActive(false);
+                    //    //Destroy(newModule.gameObject);
+                    //}
+
+                    newExits.AddRange(newModuleExits.Where(e => e != exitToMatch));
+                    modules.Add(newModule);
+                }
             }
 
             pendingExits = newExits;
@@ -90,6 +93,22 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
+    private Exit GetOppositeExit(Exit[] newModuleExits, Exit pendingExit)
+    {
+        switch (pendingExit.direction)
+        {
+            case Direction.S:
+                return newModuleExits.First(x => x.direction == Direction.A);
+            case Direction.E:
+                return newModuleExits.First(x => x.direction == Direction.B);
+            case Direction.A:
+                return newModuleExits.First(x => x.direction == Direction.W);
+            case Direction.B:
+                return newModuleExits.First(x => x.direction == Direction.N);
+            default:
+                return newModuleExits.First(x => x.direction == Direction.N);
+        }
+    }
 
     private static Module GetRandomWithTag(IEnumerable<Module> modules, string tagToMatch)
     {

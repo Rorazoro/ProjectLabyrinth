@@ -604,7 +604,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ModulePrefabs:
   - {fileID: 3004373725649224975, guid: a41e64d45163b774b81d24886ce762d7, type: 3}
-  levelScale: {x: 5, y: 1, z: 5}
+  - {fileID: 7887590068911438728, guid: 557f225baa697d4468779b4f946b1201, type: 3}
+  RoomSpacing: 33
+  levelScale: {x: 10, y: 1, z: 10}
 --- !u!4 &1925504933
 Transform:
   m_ObjectHideFlags: 0

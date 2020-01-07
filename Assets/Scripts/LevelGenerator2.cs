@@ -8,6 +8,8 @@ public class LevelGenerator2 : MonoBehaviour
 {
     [SerializeField]
     public Module[] ModulePrefabs;
+    [SerializeField]
+    public int RoomSpacing;
 
     [SerializeField]
     private Vector3Int levelScale = new Vector3Int(5, 1, 5);
@@ -17,10 +19,11 @@ public class LevelGenerator2 : MonoBehaviour
     private void Start()
     {
         connectors = new List<Connector>();
-        GenerateLevel();
+        GenerateRooms();
+        GameObject playerObject = (GameObject)Instantiate(Resources.Load("Player"), new Vector3(13, 2, -14), Quaternion.identity);
     }
 
-    private void GenerateLevel()
+    private void GenerateRooms()
     {
         int floors = levelScale.y;
         int rows = levelScale.x;
@@ -36,6 +39,7 @@ public class LevelGenerator2 : MonoBehaviour
                     Vector3Int newRoomCoord = new Vector3Int(r, f, c);
                     Room newRoomPrefab = GetRandomWithTag(ModulePrefabs, "Room") as Room;
                     Room newRoom = Instantiate(newRoomPrefab);
+                    newRoom.transform.position -= new Vector3(c * -RoomSpacing, f * RoomSpacing, r * RoomSpacing);
                     newRoom.Coordinate = newRoomCoord;
                     newRoom.transform.parent = this.gameObject.transform;
                     roomMap[r, f, c] = newRoom;
@@ -69,12 +73,7 @@ public class LevelGenerator2 : MonoBehaviour
                             newConnector.RoomCoordinates.Add(neighborCoord);
                             newConnector.transform.parent = this.gameObject.transform;
                             connectors.Add(newConnector);
-                            MatchExits(newRoomExit, newConnector.GetExit(Direction.N));
-                        }
-                        else
-                        {
-                            Connector existingConnector = connectors.Single(x => x.RoomCoordinates.Contains(newRoomCoord) && x.RoomCoordinates.Contains(neighborCoord));
-                            MatchExits(existingConnector.GetExit(Direction.S), newRoomExit);
+                            MatchExits(newRoomExit, newConnector.GetExit(Direction.A));
                         }
                     }
                 }
