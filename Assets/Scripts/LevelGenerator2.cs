@@ -12,10 +12,11 @@ public class LevelGenerator2 : MonoBehaviour
     [SerializeField]
     private Vector3Int levelScale = new Vector3Int(5, 1, 5);
     private Room[,,] roomMap;
-    private List<Tuple<Vector3Int, Vector3Int>> corridors;
+    private List<Connector> connectors;
 
     private void Start()
     {
+        connectors = new List<Connector>();
         GenerateLevel();
     }
 
@@ -28,44 +29,52 @@ public class LevelGenerator2 : MonoBehaviour
         roomMap = new Room[rows, floors, columns];
         for (int f = 0; f < roomMap.GetLength(1); f++)
         {
-            for (int c = 0; c < roomMap.GetLength(2); c++)
+            for (int r = 0; r < roomMap.GetLength(0); r++)
             {
-                for (int r = 0; r < roomMap.GetLength(0); r++)
+                for (int c = 0; c < roomMap.GetLength(2); c++)
                 {
                     Vector3Int newRoomCoord = new Vector3Int(r, f, c);
                     Room newRoomPrefab = GetRandomWithTag(ModulePrefabs, "Room") as Room;
-                    newRoomPrefab.Coordinate = newRoomCoord;
                     Room newRoom = Instantiate(newRoomPrefab);
+                    newRoom.Coordinate = newRoomCoord;
                     newRoom.transform.parent = this.gameObject.transform;
                     roomMap[r, f, c] = newRoom;
 
-                    foreach (Vector3Int neighborCoord in newRoom.GetNeighborCoordinates(Vector3Int.zero, levelScale - Vector3Int.one))
+                    List<Vector3Int> nc = newRoom.GetNeighborCoordinates(Vector3Int.zero, levelScale - Vector3Int.one);
+                    foreach (Vector3Int neighborCoord in nc)
                     {
-                        if (!corridors.Any(x => (x.Item1 == newRoomCoord && x.Item2 == neighborCoord) || (x.Item1 == neighborCoord && x.Item2 == newRoomCoord)))
+                        Exit newRoomExit;
+                        if (neighborCoord.x < newRoomCoord.x) //North
                         {
-                            corridors.Add(new Tuple<Vector3Int, Vector3Int>(newRoomCoord, neighborCoord));
+                            newRoomExit = newRoom.GetExit(Direction.N);
+                        }
+                        else if (neighborCoord.x > newRoomCoord.x) //South
+                        {
+                            newRoomExit = newRoom.GetExit(Direction.S);
+                        }
+                        else if (neighborCoord.z > newRoomCoord.z) //East
+                        {
+                            newRoomExit = newRoom.GetExit(Direction.E);
+                        }
+                        else //West
+                        {
+                            newRoomExit = newRoom.GetExit(Direction.W);
+                        }
 
-                            Exit newRoomExit;
-                            if (neighborCoord.x < newRoomCoord.x) //North
-                            {
-                                newRoomExit = newRoom.GetExit(Direction.N);
-                            }
-                            else if (neighborCoord.x > newRoomCoord.x) //South
-                            {
-                                newRoomExit = newRoom.GetExit(Direction.S);
-                            }
-                            else if (neighborCoord.z < newRoomCoord.z) //East
-                            {
-                                newRoomExit = newRoom.GetExit(Direction.E);
-                            }
-                            else if (neighborCoord.z > newRoomCoord.z) //West
-                            {
-                                newRoomExit = newRoom.GetExit(Direction.W);
-                            }
-                            else
-                            {
-
-                            }
+                        if (!connectors.Any(x => x.RoomCoordinates.Contains(newRoomCoord) && x.RoomCoordinates.Contains(neighborCoord)))
+                        {
+                            Connector newConnectorPrefab = GetRandomWithTag(ModulePrefabs, "Connector") as Connector;
+                            Connector newConnector = Instantiate(newConnectorPrefab);
+                            newConnector.RoomCoordinates.Add(newRoomCoord);
+                            newConnector.RoomCoordinates.Add(neighborCoord);
+                            newConnector.transform.parent = this.gameObject.transform;
+                            connectors.Add(newConnector);
+                            MatchExits(newRoomExit, newConnector.GetExit(Direction.N));
+                        }
+                        else
+                        {
+                            Connector existingConnector = connectors.Single(x => x.RoomCoordinates.Contains(newRoomCoord) && x.RoomCoordinates.Contains(neighborCoord));
+                            MatchExits(existingConnector.GetExit(Direction.S), newRoomExit);
                         }
                     }
                 }

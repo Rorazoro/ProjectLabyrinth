@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class Room : Module
 {
+    [SerializeField]
+    public Vector3Int Coordinate;
+
     public bool startRoom = false;
     public bool endRoom = false;
 
@@ -16,7 +19,7 @@ public class Room : Module
         neighborCoordinates.Add(new Vector3Int(this.Coordinate.x, this.Coordinate.y, this.Coordinate.z + 1));
         neighborCoordinates.Add(new Vector3Int(this.Coordinate.x - 1, this.Coordinate.y, this.Coordinate.z));
 
-        neighborCoordinates.RemoveAll(v => v.x < min.x || v.z < min.z || v.x >= max.x || v.z >= max.z);
+        neighborCoordinates.RemoveAll(v => v.x < min.x || v.z < min.z || v.x > max.x || v.z > max.z);
 
         return neighborCoordinates;
     }

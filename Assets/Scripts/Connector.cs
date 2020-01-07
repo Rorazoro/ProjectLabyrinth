@@ -4,5 +4,11 @@ using UnityEngine;
 
 public class Connector : Module
 {
+    [SerializeField]
+    public List<Vector3Int> RoomCoordinates;
 
+    public Connector()
+    {
+        RoomCoordinates = new List<Vector3Int>();
+    }
 }
