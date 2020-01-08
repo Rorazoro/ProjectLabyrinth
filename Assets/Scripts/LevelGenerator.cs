@@ -7,62 +7,154 @@ using UnityEngine;
 public class LevelGenerator : MonoBehaviour
 {
     [SerializeField]
-    private Vector3Int levelScale = new Vector3Int(5, 1, 5);
-    private List<Module> modules;
-
-    [SerializeField]
     public Module[] ModulePrefabs;
     [SerializeField]
-    public Module StartModule;
+    public Connector BlockerPrefab;
+    [SerializeField]
+    public FloorPortal FloorPortalPrefab;
+    [SerializeField]
+    public FloorPortalReceiver FloorPortalReceiverPrefab;
 
-    // Start is called before the first frame update
+    [SerializeField]
+    public int RoomSpacing = 33;
+
+    [SerializeField]
+    private Vector3Int levelScale = new Vector3Int(5, 1, 5);
+    private Room[,,] roomMap;
+    private List<Connector> connectors;
+    private FloorPortal[] floorPortals;
+
     private void Start()
     {
+        connectors = new List<Connector>();
         GenerateLevel();
-        //GameObject playerObject = (GameObject)Instantiate(Resources.Load("Player"), new Vector3(13, 2, -14), Quaternion.identity);
+        GeneratePortals();
+        SpawnPlayer();
+    }
+
+    public void SpawnPlayer()
+    {
+        int r = UnityEngine.Random.Range(0, roomMap.GetLength(0));
+        int c = UnityEngine.Random.Range(0, roomMap.GetLength(2));
+
+        Vector3 playerPosition = new Vector3((c * RoomSpacing) + 13, 2, (r * -RoomSpacing) + -14);
+        GameObject playerObject = (GameObject)Instantiate(Resources.Load("Player"), playerPosition, Quaternion.identity);
     }
 
     private void GenerateLevel()
     {
-        modules = new List<Module>();
-        Module startModule = Instantiate(StartModule, transform.position, transform.rotation);
-        startModule.transform.parent = this.gameObject.transform;
-        List<Exit> pendingExits = new List<Exit>(startModule.GetExits());
-        int Iterations = (levelScale.x * levelScale.z) - 1;
+        int floors = levelScale.y;
+        int rows = levelScale.x;
+        int columns = levelScale.z;
 
-        for (int iteration = 0; iteration < Iterations; iteration++)
+        roomMap = new Room[rows, floors, columns];
+        for (int f = 0; f < roomMap.GetLength(1); f++)
         {
-            var newExits = new List<Exit>();
-
-            foreach (var pendingExit in pendingExits)
+            for (int r = 0; r < roomMap.GetLength(0); r++)
             {
-                if (pendingExit.direction != Direction.N && pendingExit.direction != Direction.W)
+                for (int c = 0; c < roomMap.GetLength(2); c++)
                 {
-                    var newTag = GetRandom(pendingExit.Tags);
-                    var newModulePrefab = GetRandomWithTag(ModulePrefabs, newTag);
-                    var newModule = (Module)Instantiate(newModulePrefab);
-                    newModule.transform.parent = this.gameObject.transform;
+                    Vector3Int newRoomCoord = new Vector3Int(r, f, c);
+                    Room newRoomPrefab = GetRandomWithTag(ModulePrefabs, "Room") as Room;
+                    Room newRoom = Instantiate(newRoomPrefab);
+                    newRoom.transform.position -= new Vector3(c * -RoomSpacing, f * RoomSpacing, r * RoomSpacing);
+                    newRoom.Coordinate = newRoomCoord;
+                    newRoom.transform.parent = this.gameObject.transform;
+                    roomMap[r, f, c] = newRoom;
 
-                    var newModuleExits = newModule.GetExits();
-                    var exitToMatch = GetOppositeExit(newModuleExits, pendingExit);
-                    MatchExits(pendingExit, exitToMatch);
-
-                    //string output = $"Module position: {newModule.transform.position}";
-                    //if (CheckIntersect(newModule))
-                    //{
-                    //    output += " <color=red>OVERLAP!!</color>";
-                    //    Debug.Log(output);
-                    //    newModule.GetComponent<ShowBounds>().color = Color.red;
-                    //    //newModule.gameObject.SetActive(false);
-                    //    //Destroy(newModule.gameObject);
-                    //}
-
-                    newExits.AddRange(newModuleExits.Where(e => e != exitToMatch));
-                    modules.Add(newModule);
+                    GenerateConnectors(newRoom);
+                    GenerateBlockers(newRoom);
                 }
             }
+        }
+    }
 
-            pendingExits = newExits;
+    private void GenerateConnectors(Room newRoom)
+    {
+        List<Vector3Int> nc = newRoom.GetNeighborCoordinates(Vector3Int.zero, levelScale - Vector3Int.one);
+        foreach (Vector3Int neighborCoord in nc)
+        {
+            Exit newRoomExit;
+            if (neighborCoord.x < newRoom.Coordinate.x) //North
+            {
+                newRoomExit = newRoom.GetExit(Direction.N);
+            }
+            else if (neighborCoord.x > newRoom.Coordinate.x) //South
+            {
+                newRoomExit = newRoom.GetExit(Direction.S);
+            }
+            else if (neighborCoord.z > newRoom.Coordinate.z) //East
+            {
+                newRoomExit = newRoom.GetExit(Direction.E);
+            }
+            else //West
+            {
+                newRoomExit = newRoom.GetExit(Direction.W);
+            }
+
+            if (!connectors.Any(x => x.RoomCoordinates.Contains(newRoom.Coordinate) && x.RoomCoordinates.Contains(neighborCoord)))
+            {
+                Connector newConnectorPrefab = GetRandomWithTag(ModulePrefabs, "Connector") as Connector;
+                Connector newConnector = Instantiate(newConnectorPrefab);
+                newConnector.RoomCoordinates.Add(newRoom.Coordinate);
+                newConnector.RoomCoordinates.Add(neighborCoord);
+                newConnector.transform.parent = this.gameObject.transform;
+                connectors.Add(newConnector);
+                MatchExits(newRoomExit, newConnector.GetExit(Direction.A));
+            }
+        }
+    }
+
+    private void GenerateBlockers(Room newRoom)
+    {
+        List<Vector3Int> dc = newRoom.GetDeadendCoordinates(Vector3Int.zero, levelScale - Vector3Int.one);
+        foreach (Vector3Int Coord in dc)
+        {
+            Exit newRoomDeadExit;
+            if (Coord.x < newRoom.Coordinate.x) //North
+            {
+                newRoomDeadExit = newRoom.GetExit(Direction.N);
+            }
+            else if (Coord.x > newRoom.Coordinate.x) //South
+            {
+                newRoomDeadExit = newRoom.GetExit(Direction.S);
+            }
+            else if (Coord.z > newRoom.Coordinate.z) //East
+            {
+                newRoomDeadExit = newRoom.GetExit(Direction.E);
+            }
+            else //West
+            {
+                newRoomDeadExit = newRoom.GetExit(Direction.W);
+            }
+
+            Connector newConnector = Instantiate(BlockerPrefab);
+            newConnector.RoomCoordinates.Add(newRoom.Coordinate);
+            newConnector.RoomCoordinates.Add(Coord);
+            newConnector.transform.parent = this.gameObject.transform;
+            connectors.Add(newConnector);
+            MatchExits(newRoomDeadExit, newConnector.GetExit(Direction.A));
+        }
+    }
+
+    private void GeneratePortals()
+    {
+        floorPortals = new FloorPortal[roomMap.GetLength(1) - 1];
+        for (int f = 0; f < floorPortals.Length; f++)
+        {
+            int r = UnityEngine.Random.Range(0, roomMap.GetLength(0));
+            int c = UnityEngine.Random.Range(0, roomMap.GetLength(2));
+
+            Vector3 portalPosition = new Vector3((c * RoomSpacing) + 13, (f * -RoomSpacing) + 1, (r * -RoomSpacing) + -14);
+            FloorPortal portal = Instantiate(FloorPortalPrefab, portalPosition, Quaternion.identity);
+            portal.transform.parent = this.gameObject.transform;
+
+            Vector3 receiverPosition = new Vector3((c * RoomSpacing) + 13, ((f + 1) * -RoomSpacing) + 1, (r * -RoomSpacing) + -14);
+            FloorPortalReceiver receiver = Instantiate(FloorPortalReceiverPrefab, receiverPosition, Quaternion.identity);
+            receiver.transform.parent = this.gameObject.transform;
+            portal.Receiver = receiver;
+
+            floorPortals[f] = portal;
         }
     }
 
@@ -81,35 +173,6 @@ public class LevelGenerator : MonoBehaviour
         return Vector3.Angle(Vector3.forward, vector) * Mathf.Sign(vector.x);
     }
 
-    private static TItem GetRandom<TItem>(TItem[] array)
-    {
-        try
-        {
-            return array[UnityEngine.Random.Range(0, array.Length)];
-        }
-        catch (Exception)
-        {
-            throw;
-        }
-    }
-
-    private Exit GetOppositeExit(Exit[] newModuleExits, Exit pendingExit)
-    {
-        switch (pendingExit.direction)
-        {
-            case Direction.S:
-                return newModuleExits.First(x => x.direction == Direction.A);
-            case Direction.E:
-                return newModuleExits.First(x => x.direction == Direction.B);
-            case Direction.A:
-                return newModuleExits.First(x => x.direction == Direction.W);
-            case Direction.B:
-                return newModuleExits.First(x => x.direction == Direction.N);
-            default:
-                return newModuleExits.First(x => x.direction == Direction.N);
-        }
-    }
-
     private static Module GetRandomWithTag(IEnumerable<Module> modules, string tagToMatch)
     {
         var matchingModules = modules.Where(m => m.Tags.Contains(tagToMatch)).ToArray();
@@ -123,41 +186,15 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
-    private bool CheckIntersect(Module newModule)
+    private static TItem GetRandom<TItem>(TItem[] array)
     {
-        Collider collider1 = newModule.gameObject.GetComponent<Collider>();
-        GameObject[] objs = GameObject.FindGameObjectsWithTag("Corridor");
-        foreach (GameObject obj in objs.Where(x => x != newModule))
+        try
         {
-            Collider collider2 = obj.GetComponent<Collider>();
-            if (collider2.bounds.Intersects(collider1.bounds))
-            {
-                if (newModule.gameObject.GetInstanceID() != obj.GetInstanceID())
-                {
-                    return true;
-                }
-            }
+            return array[UnityEngine.Random.Range(0, array.Length)];
         }
-        return false;
-    }
-
-    private bool CheckForOverlap(Module newModule)
-    {
-        Rigidbody rb = newModule.GetComponent<Rigidbody>();
-        if (rb != null)
+        catch (Exception)
         {
-            Collider[] hitColliders = Physics.OverlapSphere(rb.centerOfMass, 1f, 9);
-            if (hitColliders.Count() > 2)
-            {
-                return true;
-            }
+            throw;
         }
-        return false;
-        //if (modules.Any(x => x.transform.position == newModule.transform.position))
-        //{
-        //    return true;
-        //}
-
-        //return false;
     }
 }

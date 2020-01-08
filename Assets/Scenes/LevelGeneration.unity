@@ -605,8 +605,14 @@ MonoBehaviour:
   ModulePrefabs:
   - {fileID: 3004373725649224975, guid: a41e64d45163b774b81d24886ce762d7, type: 3}
   - {fileID: 7887590068911438728, guid: 557f225baa697d4468779b4f946b1201, type: 3}
+  BlockerPrefab: {fileID: 4606539701943827920, guid: 4d1b632fd6ae1b74ea67714ff2d61a0b,
+    type: 3}
+  FloorPortalPrefab: {fileID: 114413074312099806, guid: c97c2c6e5d0b3e94292efe4e4eb9bf4c,
+    type: 3}
+  FloorPortalReceiverPrefab: {fileID: 4058135143045004212, guid: 17c7e0ce47b33804aa6ccd3b86b7fd09,
+    type: 3}
   RoomSpacing: 33
-  levelScale: {x: 10, y: 1, z: 10}
+  levelScale: {x: 5, y: 5, z: 5}
 --- !u!4 &1925504933
 Transform:
   m_ObjectHideFlags: 0
