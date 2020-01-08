@@ -9,7 +9,7 @@ public class LevelGenerator2 : MonoBehaviour
     [SerializeField]
     public Module[] ModulePrefabs;
     [SerializeField]
-    public int RoomSpacing;
+    public int RoomSpacing = 33;
 
     [SerializeField]
     private Vector3Int levelScale = new Vector3Int(5, 1, 5);
@@ -19,11 +19,20 @@ public class LevelGenerator2 : MonoBehaviour
     private void Start()
     {
         connectors = new List<Connector>();
-        GenerateRooms();
-        GameObject playerObject = (GameObject)Instantiate(Resources.Load("Player"), new Vector3(13, 2, -14), Quaternion.identity);
+        GenerateLevel();
+        SpawnPlayer();
     }
 
-    private void GenerateRooms()
+    public void SpawnPlayer()
+    {
+        int r = UnityEngine.Random.Range(0, roomMap.GetLength(0));
+        int c = UnityEngine.Random.Range(0, roomMap.GetLength(2));
+
+        Vector3 playerPosition = new Vector3((c * RoomSpacing) + 13, 2, (r * -RoomSpacing) + -14);
+        GameObject playerObject = (GameObject)Instantiate(Resources.Load("Player"), playerPosition, Quaternion.identity);
+    }
+
+    private void GenerateLevel()
     {
         int floors = levelScale.y;
         int rows = levelScale.x;
@@ -75,6 +84,36 @@ public class LevelGenerator2 : MonoBehaviour
                             connectors.Add(newConnector);
                             MatchExits(newRoomExit, newConnector.GetExit(Direction.A));
                         }
+                    }
+
+                    List<Vector3Int> dc = newRoom.GetDeadendCoordinates(Vector3Int.zero, levelScale - Vector3Int.one);
+                    foreach (Vector3Int Coord in dc)
+                    {
+                        Exit newRoomDeadExit;
+                        if (Coord.x < newRoomCoord.x) //North
+                        {
+                            newRoomDeadExit = newRoom.GetExit(Direction.N);
+                        }
+                        else if (Coord.x > newRoomCoord.x) //South
+                        {
+                            newRoomDeadExit = newRoom.GetExit(Direction.S);
+                        }
+                        else if (Coord.z > newRoomCoord.z) //East
+                        {
+                            newRoomDeadExit = newRoom.GetExit(Direction.E);
+                        }
+                        else //West
+                        {
+                            newRoomDeadExit = newRoom.GetExit(Direction.W);
+                        }
+
+                        Connector newConnectorPrefab = GetRandomWithTag(ModulePrefabs, "Blocker") as Connector;
+                        Connector newConnector = Instantiate(newConnectorPrefab);
+                        newConnector.RoomCoordinates.Add(newRoomCoord);
+                        newConnector.RoomCoordinates.Add(Coord);
+                        newConnector.transform.parent = this.gameObject.transform;
+                        connectors.Add(newConnector);
+                        MatchExits(newRoomDeadExit, newConnector.GetExit(Direction.A));
                     }
                 }
             }
