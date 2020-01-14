@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         canvas = GetComponent<Canvas>();
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     // Update is called once per frame
@@ -22,6 +24,19 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E))
         {
             //RaycastHit hit = Physics.Raycast(transform.position, 
+        }
+        if (Input.GetKeyDown(KeyCode.Slash))
+        {
+            if (Cursor.visible)
+            {
+                Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Locked;
+            }
+            else
+            {
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+            }
         }
     }
 }

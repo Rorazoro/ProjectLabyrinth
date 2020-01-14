@@ -39,6 +39,7 @@ public class LevelGenerator : MonoBehaviour
 
         Vector3 playerPosition = new Vector3((c * RoomSpacing) + 13, 2, (r * -RoomSpacing) + -14);
         GameObject playerObject = (GameObject)Instantiate(Resources.Load("Player"), playerPosition, Quaternion.identity);
+        playerObject.name = "Player";
     }
 
     private void GenerateLevel()
