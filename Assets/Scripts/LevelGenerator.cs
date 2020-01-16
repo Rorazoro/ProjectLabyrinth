@@ -28,7 +28,6 @@ public class LevelGenerator : MonoBehaviour
     {
         connectors = new List<Connector>();
         GenerateLevel();
-        //GeneratePortals();
         GenerateElevators();
         SpawnPlayer();
     }
@@ -139,34 +138,20 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
-    //private void GeneratePortals()
-    //{
-    //    floorPortals = new FloorPortal[roomMap.GetLength(1) - 1];
-    //    for (int f = 0; f < floorPortals.Length; f++)
-    //    {
-    //        int r = UnityEngine.Random.Range(0, roomMap.GetLength(0));
-    //        int c = UnityEngine.Random.Range(0, roomMap.GetLength(2));
-
-    //        Vector3 portalPosition = new Vector3((c * RoomSpacing) + 13, (f * -RoomSpacing) + 1, (r * -RoomSpacing) + -14);
-    //        FloorPortal portal = Instantiate(FloorPortalPrefab, portalPosition, Quaternion.identity);
-    //        portal.transform.parent = this.gameObject.transform;
-
-    //        Vector3 receiverPosition = new Vector3((c * RoomSpacing) + 13, ((f + 1) * -RoomSpacing) + 1, (r * -RoomSpacing) + -14);
-    //        FloorPortalReceiver receiver = Instantiate(FloorPortalReceiverPrefab, receiverPosition, Quaternion.identity);
-    //        receiver.transform.parent = this.gameObject.transform;
-    //        portal.Receiver = receiver;
-
-    //        floorPortals[f] = portal;
-    //    }
-    //}
-
     private void GenerateElevators()
     {
         floorPortals = new FloorPortal[roomMap.GetLength(1) - 1];
         for (int f = 0; f < floorPortals.Length; f++)
         {
-            int r = UnityEngine.Random.Range(0, roomMap.GetLength(0));
-            int c = UnityEngine.Random.Range(0, roomMap.GetLength(2));
+            int r = 0;
+            int c = 0;
+            bool validSpot = false;
+            while(!validSpot)
+            {
+                r = UnityEngine.Random.Range(0, roomMap.GetLength(0));
+                c = UnityEngine.Random.Range(0, roomMap.GetLength(2));
+                validSpot = !roomMap[r, f, c].IsElevatorRoom;
+            }
 
             Destroy(roomMap[r, f, c].gameObject);
             Room elevatorTop = Instantiate(ElevatorTopPrefab, roomMap[r, f, c].transform.position, roomMap[r, f, c].transform.rotation);

@@ -7,9 +7,8 @@ public class Room : Module
 {
     [SerializeField]
     public Vector3Int Coordinate;
-
-    public bool startRoom = false;
-    public bool endRoom = false;
+    [SerializeField]
+    public bool IsElevatorRoom = false;
 
     public List<Vector3Int> GetNeighborCoordinates(Vector3Int min, Vector3Int max)
     {

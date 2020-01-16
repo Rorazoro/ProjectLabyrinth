@@ -20,6 +20,6 @@ public class ElevatorController : MonoBehaviour, IInteractable
 
     private void Start()
     {
-        animator = this.transform.parent.transform.parent.GetComponent<Animator>();
+        animator = this.transform.parent.GetComponent<Animator>();
     }
 }

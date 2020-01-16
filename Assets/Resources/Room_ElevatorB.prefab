@@ -1365,8 +1365,7 @@ MonoBehaviour:
   Tags:
   - Room
   Coordinate: {x: 0, y: 0, z: 0}
-  startRoom: 0
-  endRoom: 0
+  IsElevatorRoom: 1
 --- !u!65 &8648686994912252809
 BoxCollider:
   m_ObjectHideFlags: 0
