@@ -13,9 +13,10 @@ public class InteractabilityCheck : MonoBehaviour
         if (Physics.Raycast(transform.position, transform.forward, out hit, range))
         {
             IInteractable interactable = hit.collider.GetComponent<IInteractable>();
-
+            
             if (interactable != null)
             {
+                Debug.Log("Interactable in range: " + interactable);
                 interactable.ShowInteractability();
 
                 if (Input.GetKeyDown(KeyCode.E))

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311926, g: 0.38073996, b: 0.35872698, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -416,7 +416,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22400762, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 0.000022888184
       objectReference: {fileID: 0}
     - target: {fileID: 22426080, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchorMax.x
@@ -910,12 +910,12 @@ MonoBehaviour:
   - {fileID: 7887590068911438728, guid: 557f225baa697d4468779b4f946b1201, type: 3}
   BlockerPrefab: {fileID: 4606539701943827920, guid: 4d1b632fd6ae1b74ea67714ff2d61a0b,
     type: 3}
-  FloorPortalPrefab: {fileID: 114413074312099806, guid: c97c2c6e5d0b3e94292efe4e4eb9bf4c,
+  ElevatorTopPrefab: {fileID: 903560344191045931, guid: e1362486426c87c49b81b097f2a453e8,
     type: 3}
-  FloorPortalReceiverPrefab: {fileID: 4058135143045004212, guid: 17c7e0ce47b33804aa6ccd3b86b7fd09,
+  ElevatorBottomPrefab: {fileID: 3542935423343327101, guid: 243b797d94a0375459a9ad21d764f755,
     type: 3}
   RoomSpacing: 33
-  levelScale: {x: 5, y: 5, z: 5}
+  levelScale: {x: 3, y: 5, z: 3}
 --- !u!4 &1925504933
 Transform:
   m_ObjectHideFlags: 0

@@ -1972,6 +1972,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 390957112487467968}
+  - component: {fileID: 5935023721317539524}
   m_Layer: 0
   m_Name: Elevator
   m_TagString: Untagged
@@ -1995,6 +1996,25 @@ Transform:
   m_Father: {fileID: 8810487637955950993}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &5935023721317539524
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2035505966334961230}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a8398764e5feb734893cc243c1c3b910, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &2233923373401510733
 GameObject:
   m_ObjectHideFlags: 0
@@ -3965,10 +3985,10 @@ MonoBehaviour:
   - {x: 20, y: 1, z: 0}
   - {x: 30, y: 1, z: 0}
   - {x: 30, y: 1, z: -10}
-  - {x: 20, y: -30, z: -20}
-  - {x: 10, y: -30, z: -20}
-  - {x: 10, y: -30, z: -10}
-  - {x: 20, y: -30, z: -10}
+  - {x: 20, y: -17, z: -20}
+  - {x: 10, y: -17, z: -20}
+  - {x: 10, y: -17, z: -10}
+  - {x: 20, y: -17, z: -10}
   - {x: 10, y: 1, z: -10}
   - {x: 10, y: 1, z: 0}
   - {x: 20, y: 1, z: 0}
@@ -3991,20 +4011,20 @@ MonoBehaviour:
   - {x: 10, y: 0, z: -10}
   - {x: 20, y: 1, z: -20}
   - {x: 10, y: 1, z: -20}
-  - {x: 20, y: -30, z: -20}
-  - {x: 10, y: -30, z: -20}
+  - {x: 20, y: -17, z: -20}
+  - {x: 10, y: -17, z: -20}
   - {x: 10, y: 1, z: -20}
   - {x: 10, y: 1, z: -10}
-  - {x: 10, y: -30, z: -20}
-  - {x: 10, y: -30, z: -10}
+  - {x: 10, y: -17, z: -20}
+  - {x: 10, y: -17, z: -10}
   - {x: 20, y: 1, z: -10}
   - {x: 20, y: 1, z: -20}
-  - {x: 20, y: -30, z: -10}
-  - {x: 20, y: -30, z: -20}
+  - {x: 20, y: -17, z: -10}
+  - {x: 20, y: -17, z: -20}
   - {x: 10, y: 1, z: -10}
   - {x: 20, y: 1, z: -10}
-  - {x: 10, y: -30, z: -10}
-  - {x: 20, y: -30, z: -10}
+  - {x: 10, y: -17, z: -10}
+  - {x: 20, y: -17, z: -10}
   m_Textures0:
   - {x: 0, y: 0}
   - {x: -10, y: 0}
@@ -4128,20 +4148,20 @@ MonoBehaviour:
   - {x: -10, y: -10}
   - {x: -20, y: 1}
   - {x: -10, y: 1}
-  - {x: -20, y: -30}
-  - {x: -10, y: -30}
+  - {x: -20, y: -17}
+  - {x: -10, y: -17}
   - {x: -20, y: 1}
   - {x: -10, y: 1}
-  - {x: -20, y: -30}
-  - {x: -10, y: -30}
+  - {x: -20, y: -17}
+  - {x: -10, y: -17}
   - {x: 10, y: 1}
   - {x: 20, y: 1}
-  - {x: 10, y: -30}
-  - {x: 20, y: -30}
+  - {x: 10, y: -17}
+  - {x: 20, y: -17}
   - {x: 10, y: 1}
   - {x: 20, y: 1}
-  - {x: 10, y: -30}
-  - {x: 20, y: -30}
+  - {x: 10, y: -17}
+  - {x: 20, y: -17}
   m_Textures2: []
   m_Textures3: []
   m_Tangents:
@@ -5371,6 +5391,7 @@ GameObject:
   - component: {fileID: 2624426465684952416}
   - component: {fileID: 6237979659386516368}
   - component: {fileID: 5433272104453022248}
+  - component: {fileID: 8388454323474800568}
   m_Layer: 0
   m_Name: box
   m_TagString: Untagged
@@ -5666,6 +5687,18 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 14
   m_Mesh: {fileID: 0}
+--- !u!114 &8388454323474800568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5129820946168839566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26c88b5802c93034495653547d38561d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5319422393797200641
 GameObject:
   m_ObjectHideFlags: 0

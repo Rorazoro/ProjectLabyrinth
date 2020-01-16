@@ -11,9 +11,9 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField]
     public Connector BlockerPrefab;
     [SerializeField]
-    public FloorPortal FloorPortalPrefab;
+    public Room ElevatorTopPrefab;
     [SerializeField]
-    public FloorPortalReceiver FloorPortalReceiverPrefab;
+    public Room ElevatorBottomPrefab;
 
     [SerializeField]
     public int RoomSpacing = 33;
@@ -28,7 +28,8 @@ public class LevelGenerator : MonoBehaviour
     {
         connectors = new List<Connector>();
         GenerateLevel();
-        GeneratePortals();
+        //GeneratePortals();
+        GenerateElevators();
         SpawnPlayer();
     }
 
@@ -138,7 +139,28 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
-    private void GeneratePortals()
+    //private void GeneratePortals()
+    //{
+    //    floorPortals = new FloorPortal[roomMap.GetLength(1) - 1];
+    //    for (int f = 0; f < floorPortals.Length; f++)
+    //    {
+    //        int r = UnityEngine.Random.Range(0, roomMap.GetLength(0));
+    //        int c = UnityEngine.Random.Range(0, roomMap.GetLength(2));
+
+    //        Vector3 portalPosition = new Vector3((c * RoomSpacing) + 13, (f * -RoomSpacing) + 1, (r * -RoomSpacing) + -14);
+    //        FloorPortal portal = Instantiate(FloorPortalPrefab, portalPosition, Quaternion.identity);
+    //        portal.transform.parent = this.gameObject.transform;
+
+    //        Vector3 receiverPosition = new Vector3((c * RoomSpacing) + 13, ((f + 1) * -RoomSpacing) + 1, (r * -RoomSpacing) + -14);
+    //        FloorPortalReceiver receiver = Instantiate(FloorPortalReceiverPrefab, receiverPosition, Quaternion.identity);
+    //        receiver.transform.parent = this.gameObject.transform;
+    //        portal.Receiver = receiver;
+
+    //        floorPortals[f] = portal;
+    //    }
+    //}
+
+    private void GenerateElevators()
     {
         floorPortals = new FloorPortal[roomMap.GetLength(1) - 1];
         for (int f = 0; f < floorPortals.Length; f++)
@@ -146,16 +168,15 @@ public class LevelGenerator : MonoBehaviour
             int r = UnityEngine.Random.Range(0, roomMap.GetLength(0));
             int c = UnityEngine.Random.Range(0, roomMap.GetLength(2));
 
-            Vector3 portalPosition = new Vector3((c * RoomSpacing) + 13, (f * -RoomSpacing) + 1, (r * -RoomSpacing) + -14);
-            FloorPortal portal = Instantiate(FloorPortalPrefab, portalPosition, Quaternion.identity);
-            portal.transform.parent = this.gameObject.transform;
+            Destroy(roomMap[r, f, c].gameObject);
+            Room elevatorTop = Instantiate(ElevatorTopPrefab, roomMap[r, f, c].transform.position, roomMap[r, f, c].transform.rotation);
+            elevatorTop.transform.parent = this.gameObject.transform;
+            roomMap[r, f, c] = elevatorTop;
 
-            Vector3 receiverPosition = new Vector3((c * RoomSpacing) + 13, ((f + 1) * -RoomSpacing) + 1, (r * -RoomSpacing) + -14);
-            FloorPortalReceiver receiver = Instantiate(FloorPortalReceiverPrefab, receiverPosition, Quaternion.identity);
-            receiver.transform.parent = this.gameObject.transform;
-            portal.Receiver = receiver;
-
-            floorPortals[f] = portal;
+            Destroy(roomMap[r, f + 1, c].gameObject);
+            Room elevatorBottom = Instantiate(ElevatorBottomPrefab, roomMap[r, f + 1, c].transform.position, roomMap[r, f + 1, c].transform.rotation);
+            elevatorBottom.transform.parent = this.gameObject.transform;
+            roomMap[r, f + 1, c] = elevatorBottom;
         }
     }
 
