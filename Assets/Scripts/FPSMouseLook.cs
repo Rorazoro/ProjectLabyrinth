@@ -30,9 +30,11 @@ public class FPSMouseLook : MonoBehaviour
 
     Quaternion originalRotation;
 
+    public bool lockCursor = false;
+
     void Update()
     {
-        if (Cursor.lockState == CursorLockMode.Locked)
+        if (!lockCursor)
         {
             if (axes == RotationAxes.MouseXAndY)
             {
