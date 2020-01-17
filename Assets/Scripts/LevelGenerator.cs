@@ -29,7 +29,7 @@ public class LevelGenerator : MonoBehaviour
         connectors = new List<Connector>();
         GenerateLevel();
         GenerateElevators();
-        SpawnPlayer();
+        //SpawnPlayer();
     }
 
     public void SpawnPlayer()
