@@ -1,9 +1,10 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Mirror;
 
 [AddComponentMenu("Camera-Control/Smooth Mouse Look")]
-public class FPSMouseLook : MonoBehaviour
+public class FPSMouseLook : NetworkBehaviour
 {
 
     public enum RotationAxes { MouseXAndY = 0, MouseX = 1, MouseY = 2 }
@@ -125,8 +126,9 @@ public class FPSMouseLook : MonoBehaviour
         }
     }
 
-    void Start()
+    public override void OnStartLocalPlayer()
     {
+        base.OnStartLocalPlayer();
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb)
             rb.freezeRotation = true;

@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using Mirror;
+using UnityEngine;
  
 [RequireComponent(typeof(CharacterController))]
-public class FPSMovement : MonoBehaviour
+public class FPSMovement : NetworkBehaviour
 {
     [Tooltip("How fast the player moves when walking (default move speed).")]
     [SerializeField]
@@ -68,10 +69,10 @@ public class FPSMovement : MonoBehaviour
     private Vector3 m_ContactPoint;
     private bool m_PlayerControl = false;
     private int m_JumpTimer;
- 
- 
-    private void Start()
+
+    public override void OnStartLocalPlayer()
     {
+        base.OnStartLocalPlayer();
         // Saving component references to improve performance.
         m_Transform = GetComponent<Transform>();
         m_Controller = GetComponent<CharacterController>();
