@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     private PlayerMotor motor;
     private Vector3 _velocity = Vector3.zero;
     private Vector3 _rotation = Vector3.zero;
+    private Vector3 _cameraRotation = Vector3.zero;
 
     private void Start()
     {
@@ -41,6 +42,14 @@ public class PlayerController : MonoBehaviour
 
         //Apply rotation
         motor.Rotate(_rotation);
+
+        //Calculate camera rotation as a 3D vector (turning around)
+        float _xRot = Input.GetAxisRaw("Mouse Y");
+
+        _cameraRotation = new Vector3(_xRot, 0f, 0f) * lookSensitivity;
+
+        //Apply rotation
+        motor.RotateCamera(_cameraRotation);
     }
 
     //private Canvas canvas;
