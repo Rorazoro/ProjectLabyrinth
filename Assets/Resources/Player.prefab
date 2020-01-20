@@ -244,8 +244,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  compressRotation: 1
-  clientAuthority: 0
+  compressRotation: 0
+  clientAuthority: 1
 --- !u!54 &3650724054834291437
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -275,7 +275,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
-  lookSensitivity: 3
+  lookSensitivity: 15
+  interactionRange: 5
 --- !u!114 &5612482305363259557
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -288,7 +289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcbd7598bcb5d364e8d9336fb64d3ee1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 0}
+  cam: {fileID: 1411220608231638054}
 --- !u!114 &3975825811820599409
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -307,3 +308,4 @@ MonoBehaviour:
   - {fileID: 5612482305363259557}
   - {fileID: 1110239086450445337}
   - {fileID: 6599118665952465558}
+  - {fileID: 2696541812494441209}

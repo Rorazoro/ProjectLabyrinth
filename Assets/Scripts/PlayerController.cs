@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,7 +9,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float speed = 5f;
     [SerializeField]
-    private float lookSensitivity = 3f;
+    private float lookSensitivity = 15f;
+    [SerializeField]
+    private float interactionRange = 5f;
 
     private PlayerMotor motor;
     private Vector3 _velocity = Vector3.zero;
@@ -21,6 +24,32 @@ public class PlayerController : MonoBehaviour
     }
 
     private void Update()
+    {
+        PerformMovement();
+        CheckInteraction();
+    }
+
+    private void CheckInteraction()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.forward, out hit, interactionRange))
+        {
+            IInteractable interactable = hit.collider.GetComponent<IInteractable>();
+
+            if (interactable != null)
+            {
+                //Debug.Log("Interactable in range: " + interactable);
+                interactable.ShowInteractability();
+
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    interactable.Interact();
+                }
+            }
+        }
+    }
+
+    private void PerformMovement()
     {
         //Calculate movement velocity as a 3D vector
         float _xMov = Input.GetAxisRaw("Horizontal");

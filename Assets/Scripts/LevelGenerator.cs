@@ -30,6 +30,17 @@ public class LevelGenerator : MonoBehaviour
         GenerateLevel();
         GenerateElevators();
         //SpawnPlayer();
+        GenerateSpawnpoints();
+    }
+
+    public void GenerateSpawnpoints()
+    {
+        int r = UnityEngine.Random.Range(0, roomMap.GetLength(0));
+        int c = UnityEngine.Random.Range(0, roomMap.GetLength(2));
+
+        Vector3 spawnpointPosition = new Vector3((c * RoomSpacing) + 13, 2, (r * -RoomSpacing) + -14);
+        GameObject spawnpointObject = (GameObject)Instantiate(Resources.Load("Spawnpoint"), spawnpointPosition, Quaternion.identity);
+        //spawnpointObject.name = "Player";
     }
 
     public void SpawnPlayer()

@@ -16,7 +16,7 @@ public class InteractabilityCheck : MonoBehaviour
             
             if (interactable != null)
             {
-                Debug.Log("Interactable in range: " + interactable);
+                //Debug.Log("Interactable in range: " + interactable);
                 interactable.ShowInteractability();
 
                 if (Input.GetKeyDown(KeyCode.E))
