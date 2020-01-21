@@ -5,5 +5,7 @@ public interface IInteractable
 
     void ShowInteractability();
 
+    void RpcInteract();
+
     void Interact();
 }

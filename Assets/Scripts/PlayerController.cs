@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerMotor))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
     [SerializeField]
     private float speed = 5f;
@@ -39,14 +40,21 @@ public class PlayerController : MonoBehaviour
             if (interactable != null)
             {
                 //Debug.Log("Interactable in range: " + interactable);
-                interactable.ShowInteractability();
+                //interactable.ShowInteractability();
 
                 if (Input.GetKeyDown(KeyCode.E))
                 {
-                    interactable.Interact();
+                    CmdInteractWithObject(hit.collider.gameObject);
                 }
             }
         }
+    }
+
+    [Command]
+    public void CmdInteractWithObject(GameObject gameObject)
+    {
+        IInteractable interactable = gameObject.GetComponent<IInteractable>();
+        interactable.RpcInteract();
     }
 
     private void PerformMovement()
@@ -80,49 +88,4 @@ public class PlayerController : MonoBehaviour
         //Apply rotation
         motor.RotateCamera(_cameraRotation);
     }
-
-    //private Canvas canvas;
-    //private GameObject playerCamera;s
-    //private FPSMouseLook playerMouseLook;
-    //private FPSMouseLook camMouseLook;
-
-    ////float inputX = Input.GetAxis("Horizontal");
-    ////float inputY = Input.GetAxis("Vertical");
-
-    //// Start is called before the first frame update
-    //private void Start()
-    //{
-    //    canvas = GetComponent<Canvas>();
-    //    playerCamera = transform.Find("Player Cam").gameObject;
-    //    camMouseLook = playerCamera.GetComponent<FPSMouseLook>();
-    //    playerMouseLook = GetComponent<FPSMouseLook>();
-    //    Cursor.visible = false;
-    //    Cursor.lockState = CursorLockMode.Locked;
-    //}
-
-    //// Update is called once per frame
-    //private void Update()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.E))
-    //    {
-    //        //RaycastHit hit = Physics.Raycast(transform.position, 
-    //    }
-    //    if (Input.GetKeyDown(KeyCode.Slash) || Input.GetKeyDown(KeyCode.Escape))
-    //    {
-    //        if (playerMouseLook.lockCursor && camMouseLook.lockCursor)
-    //        {
-    //            Cursor.visible = false;
-    //            Cursor.lockState = CursorLockMode.Locked;
-    //            playerMouseLook.lockCursor = false;
-    //            camMouseLook.lockCursor = false;
-    //        }
-    //        else
-    //        {
-    //            Cursor.visible = true;
-    //            Cursor.lockState = CursorLockMode.None;
-    //            playerMouseLook.lockCursor = true;
-    //            camMouseLook.lockCursor = true;
-    //        }
-    //    }
-    //}
 }

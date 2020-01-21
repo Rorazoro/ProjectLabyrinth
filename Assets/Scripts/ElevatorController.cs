@@ -1,12 +1,19 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ElevatorController : MonoBehaviour, IInteractable
+public class ElevatorController : NetworkBehaviour, IInteractable
 {
     public string InteractabilityInfo => throw new System.NotImplementedException();
 
     private Animator animator;
+
+    [ClientRpc]
+    public void RpcInteract()
+    {
+        Interact();
+    }
 
     public void Interact()
     {

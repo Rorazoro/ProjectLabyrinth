@@ -1,14 +1,21 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoorController : MonoBehaviour, IInteractable
+public class DoorController : NetworkBehaviour, IInteractable
 {
     [SerializeField]
     public string direction;
     public string InteractabilityInfo => throw new System.NotImplementedException();
 
     private Animator animator;
+
+    [ClientRpc]
+    public void RpcInteract()
+    {
+        Interact();
+    }
 
     public void Interact()
     {

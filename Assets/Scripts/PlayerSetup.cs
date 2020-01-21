@@ -12,7 +12,7 @@ public class PlayerSetup : NetworkBehaviour
 
     private void Start()
     {
-        if (!isLocalPlayer)
+        if (!hasAuthority)
         {
             foreach (Behaviour b in componentsToDisable)
             {
