@@ -378,7 +378,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   compressRotation: 1
-  clientAuthority: 1
+  clientAuthority: 0
 --- !u!1 &2683106257336336793
 GameObject:
   m_ObjectHideFlags: 0

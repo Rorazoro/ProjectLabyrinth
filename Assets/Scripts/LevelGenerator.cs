@@ -2,9 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Mirror;
 using UnityEngine;
 
-public class LevelGenerator : MonoBehaviour
+public class LevelGenerator : NetworkBehaviour
 {
     [SerializeField]
     public Module[] ModulePrefabs;
@@ -29,7 +30,6 @@ public class LevelGenerator : MonoBehaviour
         connectors = new List<Connector>();
         GenerateLevel();
         GenerateElevators();
-        //SpawnPlayer();
         GenerateSpawnpoints();
     }
 
@@ -39,18 +39,7 @@ public class LevelGenerator : MonoBehaviour
         int c = UnityEngine.Random.Range(0, roomMap.GetLength(2));
 
         Vector3 spawnpointPosition = new Vector3((c * RoomSpacing) + 13, 2, (r * -RoomSpacing) + -14);
-        GameObject spawnpointObject = (GameObject)Instantiate(Resources.Load("Spawnpoint"), spawnpointPosition, Quaternion.identity);
-        //spawnpointObject.name = "Player";
-    }
-
-    public void SpawnPlayer()
-    {
-        int r = UnityEngine.Random.Range(0, roomMap.GetLength(0));
-        int c = UnityEngine.Random.Range(0, roomMap.GetLength(2));
-
-        Vector3 playerPosition = new Vector3((c * RoomSpacing) + 13, 2, (r * -RoomSpacing) + -14);
-        GameObject playerObject = (GameObject)Instantiate(Resources.Load("Player"), playerPosition, Quaternion.identity);
-        playerObject.name = "Player";
+        GameObject spawnpointObject = (GameObject)Instantiate(Resources.Load("StartPoint"), spawnpointPosition, Quaternion.identity);
     }
 
     private void GenerateLevel()
